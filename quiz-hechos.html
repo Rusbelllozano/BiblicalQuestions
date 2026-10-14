@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruta de Hechos 1–12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one question card at a time, under a 4-stop route bar that follows Acts 1:8 outward */
+:root{
+  --bg:#eef2f1; --surface:#ffffff; --ink:#13232a; --muted:#56676e; --line:#d3dcda;
+  --accent:#0e6767; --accent-soft:#dcefed; --gold:#b97a08; --gold-soft:#f8ecd2;
+  --good:#2b7a4b; --good-soft:#e1f2e7; --bad:#b0383a; --bad-soft:#f7e2e2;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Figtree", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e161a; --surface:#16222a; --ink:#e6eeee; --muted:#9aaab0; --line:#2a3b43;
+  --accent:#55b8b1; --accent-soft:#163a3b; --gold:#e3aa3d; --gold-soft:#3a2d12;
+  --good:#63c08a; --good-soft:#173527; --bad:#e57373; --bad-soft:#3d1d1f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e161a; --surface:#16222a; --ink:#e6eeee; --muted:#9aaab0; --line:#2a3b43;
+  --accent:#55b8b1; --accent-soft:#163a3b; --gold:#e3aa3d; --gold-soft:#3a2d12;
+  --good:#63c08a; --good-soft:#173527; --bad:#e57373; --bad-soft:#3d1d1f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:24px 48px;display:grid;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.05;margin:0;text-wrap:balance}
+.sub{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.score{display:flex;gap:8px;align-items:baseline;background:var(--gold-soft);color:var(--ink);padding:8px 14px;border-radius:999px;font-variant-numeric:tabular-nums;font-weight:600}
+.score b{font-family:var(--display);font-size:1.4rem;color:var(--gold)}
+/* route */
+.route{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.route::before{content:"";position:absolute;left:12.5%;right:12.5%;top:17px;height:2px;background:var(--line)}
+.stop{position:relative;display:grid;justify-items:center;gap:6px;background:none;border:0;color:var(--muted);font:inherit;cursor:pointer;padding:0 4px;text-align:center}
+.stop .dot{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:2px solid var(--line);font-family:var(--display);font-weight:800;font-size:.95rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.stop .name{font-size:.78rem;font-weight:600;line-height:1.2}
+.stop .chap{font-size:.72rem}
+.stop.done .dot{border-color:var(--good);color:var(--good)}
+.stop.on .dot{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.stop.on{color:var(--ink)}
+.stop:focus-visible{outline:none}.stop:focus-visible .dot{box-shadow:0 0 0 3px var(--accent-soft)}
+.verse{font-size:.82rem;color:var(--muted);text-align:center;margin:-6px 0 0}
+/* card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.pips{display:flex;flex-wrap:wrap;gap:5px}
+.pip{width:27px;height:27px;border-radius:7px;border:1px solid var(--line);background:none;color:var(--muted);font:600 .78rem var(--body);cursor:pointer;font-variant-numeric:tabular-nums}
+.pip.cur{border-color:var(--accent);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.pip.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.pip.no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.q{font-family:var(--display);font-weight:600;font-size:clamp(1.15rem,3.6vw,1.45rem);line-height:1.25;margin:0;text-wrap:balance}
+.stake{font-size:.85rem;color:var(--muted)}.stake b{color:var(--gold);font-variant-numeric:tabular-nums}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:center;text-align:left;width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:500 1rem var(--body);cursor:pointer;transition:border-color .15s,background .15s}
+.opt .k{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--bg);font-weight:700;font-size:.85rem}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:focus-visible{outline:3px solid var(--accent-soft);outline-offset:1px}
+.opt:disabled{cursor:default}
+.opt.gone{opacity:.32;text-decoration:line-through}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.right .k{background:var(--good);color:var(--surface)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .k{background:var(--bad);color:var(--surface)}
+/* helps */
+.helps{display:flex;flex-wrap:wrap;gap:8px}
+.help{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:600 .85rem var(--body);cursor:pointer;text-decoration:none}
+.help:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.help:focus-visible{outline:3px solid var(--accent-soft)}
+.help:disabled{opacity:.45;cursor:default}
+.help .cost{font-weight:500;color:var(--muted);font-size:.78rem}
+.help svg{width:16px;height:16px;flex:none}
+.panel{border-radius:10px;padding:12px 14px;font-size:.95rem;display:grid;gap:8px}
+.panel.hint{background:var(--gold-soft)}
+.panel.friend{background:var(--accent-soft)}
+.panel.fb-ok{background:var(--good-soft)}
+.panel.fb-no{background:var(--bad-soft)}
+.panel h3{margin:0;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+.panel p{margin:0}
+.panel .row{display:flex;flex-wrap:wrap;gap:8px}
+.mini{padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 .85rem var(--body);cursor:pointer;text-decoration:none}
+.mini:hover{border-color:var(--accent)}
+textarea{width:100%;min-height:96px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:.85rem/1.4 var(--body);padding:8px;resize:vertical}
+.nav{display:flex;justify-content:space-between;gap:10px}
+.btn{padding:11px 18px;border-radius:10px;border:0;background:var(--accent);color:var(--surface);font:700 .95rem var(--body);cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn:focus-visible{outline:3px solid var(--accent-soft);outline-offset:2px}
+/* results */
+.res{display:grid;gap:14px}
+.big{font-family:var(--display);font-weight:800;font-size:2.6rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.res ol{margin:0;padding-left:1.2rem;display:grid;gap:6px;font-size:.92rem}
+.res li.no{color:var(--bad)} .res li.ok{color:var(--good)}
+.res li span{color:var(--ink)}
+.rules{font-size:.82rem;color:var(--muted);line-height:1.55}
+.rules b{color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-weight:600;font-size:.88rem}
+@media (max-width:480px){.stop .chap{display:none}.card{padding:16px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* level picker + level chip */
+.titlerow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font:700 .75rem var(--body);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.hright{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.bars{display:inline-flex;gap:2px;align-items:flex-end;flex:none}
+.bars i{display:block;width:4px;border-radius:1px;background:currentColor;opacity:.28}
+.bars i:nth-child(1){height:5px}.bars i:nth-child(2){height:8px}.bars i:nth-child(3){height:11px}
+.bars i.on{opacity:1}
+.levels{display:grid;gap:10px}
+.lvl{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:14px;row-gap:2px;align-items:center;text-align:left;width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+.lvl:hover{border-color:var(--accent);background:var(--accent-soft)}
+.lvl:focus-visible{outline:3px solid var(--accent-soft);outline-offset:1px}
+.lvl.last{border-color:var(--accent)}
+.lvl .bars{grid-row:1 / span 3;color:var(--accent);gap:3px}
+.lvl .bars i{width:6px}.lvl .bars i:nth-child(1){height:10px}.lvl .bars i:nth-child(2){height:16px}.lvl .bars i:nth-child(3){height:22px}
+.lvl .nm{font-family:var(--display);font-weight:800;font-size:1.3rem;line-height:1.15;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.lvl .ds{color:var(--muted);font-size:.92rem;line-height:1.4}
+.lvl .sc{font-size:.84rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.lvl .sc b{color:var(--gold)}
+.tag{font:700 .7rem var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:999px}
+[hidden]{display:none!important}
+/* sound controls + confetti layer */
+.sound{display:inline-flex;gap:4px;padding:3px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.sbtn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:999px;border:0;background:none;color:var(--ink);font:600 .8rem var(--body);cursor:pointer}
+.sbtn svg{width:18px;height:18px;flex:none}
+.sbtn:hover{background:var(--accent-soft);color:var(--accent)}
+.sbtn:focus-visible{outline:3px solid var(--accent-soft)}
+.sbtn[aria-pressed="false"]#musicBtn,.sbtn[aria-pressed="true"]#muteBtn{color:var(--muted)}
+.sbtn[aria-pressed="true"]#muteBtn{background:var(--bad-soft);color:var(--bad)}
+#musicBtn[disabled]{opacity:.4;cursor:default}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+.opt.right{animation:pop .45s ease-out}
+.opt.wrong{animation:shake .4s ease-in-out}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){.opt.right,.opt.wrong{animation:none}}
+@media (max-width:480px){.sbtn .lbl{display:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="titlerow"><h1>Ruta de Hechos 1–12</h1><span class="chip" id="lvchip" hidden></span></div>
+      <p class="sub">3 niveles · 40 preguntas cada uno · Reina Valera 1960 · 4 tramos del viaje</p>
+    </div>
+    <div class="hright">
+      <div class="score" id="scorebox" aria-live="polite" hidden><b id="total">0</b><span>/ 400 pts</span></div>
+      <div class="sound" role="group" aria-label="Sonido"><button type="button" class="sbtn" id="musicBtn" aria-pressed="true" title="Música de fondo"></button><button type="button" class="sbtn" id="muteBtn" aria-pressed="false" title="Silenciar todo"></button></div>
+      <button type="button" class="mini" id="chg" hidden>Cambiar nivel</button>
+    </div>
+  </header>
+
+  <nav class="route" id="route" aria-label="Bloques del cuestionario" hidden></nav>
+  <p class="verse" hidden>El recorrido sigue Hechos 1:8: de Jerusalén a Samaria y hasta lo último de la tierra.</p>
+
+  <main id="main"></main>
+
+  <p class="rules"><b>Cómo se juega.</b> Elige un nivel: Fácil, Medio o Difícil. Cada pregunta vale 10 puntos. Las ayudas restan: <b>Pista −2</b>, <b>Ve a la cita −1</b>, <b>50/50 −3</b>, <b>Pide ayuda a un amigo −3</b>. El 50/50 y la ayuda del amigo se pueden usar una vez por bloque. Una respuesta correcta siempre suma al menos 1 punto. Tu avance de cada nivel se guarda en este navegador. Con los botones de arriba puedes apagar la música o silenciar todo.</p>
+  <div class="nav" id="resetnav" hidden><button class="btn ghost" id="reset" type="button" title="Borra solo el avance del nivel actual">Reiniciar todo</button></div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<script>
+const BLOCKS=[
+ {name:"Jerusalén",chap:"Caps. 1–3",title:"La iglesia nace"},
+ {name:"Jerusalén",chap:"Caps. 4–6",title:"Oposición y organización"},
+ {name:"Samaria y Damasco",chap:"Caps. 7–9",title:"Esteban, Felipe y Saulo"},
+ {name:"Cesarea y Antioquía",chap:"Caps. 10–12",title:"El evangelio a los gentiles"}
+];
+const LEVELS={
+ facil:{name:"Fácil",n:1,desc:"Los grandes momentos: Pentecostés, el cojo sanado, Esteban, la conversión de Saulo y Pedro liberado por el ángel.",q:[
+  {"b": 0, "q": "Después de hablar con los apóstoles, ¿cómo fue llevado Jesús al cielo?", "o": ["En un carro de fuego", "Fue alzado, y le recibió una nube que le ocultó de sus ojos", "Subió por una escalera de luz", "Desapareció de noche sin que nadie lo viera"], "a": 1, "ref": "Hechos 1:9", "hint": "Los apóstoles lo estaban mirando mientras subía, hasta que algo lo tapó de su vista.", "ex": "Viéndolo ellos, Jesús fue alzado, y le recibió una nube que le ocultó de sus ojos.", "friend": "La de la nube. Lo del carro de fuego fue Elías, no Jesús."},
+  {"b": 0, "q": "El día de Pentecostés, ¿qué se apareció sobre cada uno de los discípulos?", "o": ["Una paloma blanca", "Una corona de oro", "Una gran estrella", "Lenguas repartidas, como de fuego"], "a": 3, "ref": "Hechos 2:1-4", "hint": "Tiene que ver con lo que empezaron a hacer enseguida: hablar en otros idiomas.", "ex": "Vino del cielo un estruendo como de un viento recio, y se les aparecieron lenguas repartidas, como de fuego, asentándose sobre cada uno de ellos.", "friend": "Lenguas como de fuego. La paloma fue en el bautismo de Jesús."},
+  {"b": 0, "q": "¿Quién se puso en pie y predicó a la multitud el día de Pentecostés?", "o": ["Pedro", "Juan", "Matías", "Jacobo"], "a": 0, "ref": "Hechos 2:14", "hint": "Es el apóstol que había negado a Jesús tres veces.", "ex": "Pedro, poniéndose en pie con los once, alzó la voz y les habló a los varones judíos y a todos los que habitaban en Jerusalén.", "friend": "Pedro. Se paró con los once y les habló a todos."},
+  {"b": 0, "q": "¿Qué le dijo Pedro al cojo que pedía limosna en el templo?", "o": ["«Toma estas monedas y vete a tu casa»", "«Espera aquí hasta que volvamos»", "«No tengo plata ni oro, pero lo que tengo te doy»", "«Ve y lávate en el estanque»"], "a": 2, "ref": "Hechos 3:6", "hint": "Pedro no le dio dinero, sino algo distinto.", "ex": "Pedro le dijo: No tengo plata ni oro, pero lo que tengo te doy; en el nombre de Jesucristo de Nazaret, levántate y anda.", "friend": "La de «no tengo plata ni oro». Esa frase es muy famosa."},
+  {"b": 0, "q": "¿Qué hizo el cojo después de ser sanado?", "o": ["Entró en el templo andando, saltando y alabando a Dios", "Se fue corriendo a su casa sin decir nada", "Se quedó sentado en la puerta", "Le pidió más dinero a Pedro"], "a": 0, "ref": "Hechos 3:8", "hint": "Entró con Pedro y Juan a un lugar y no se podía estar quieto.", "ex": "Saltando, se puso en pie y anduvo; y entró con ellos en el templo, andando, y saltando, y alabando a Dios.", "friend": "Entró al templo saltando y alabando a Dios. ¡Imagínate la alegría!"},
+  {"b": 0, "q": "¿A quién está dirigido el libro de los Hechos?", "o": ["Timoteo", "Tito", "Teófilo", "Filemón"], "a": 2, "ref": "Hechos 1:1", "hint": "Es la misma persona a quien Lucas dirige su Evangelio (Lucas 1:3).", "ex": "Hechos comienza: «En el primer tratado, oh Teófilo, hablé acerca de todas las cosas que Jesús comenzó a hacer y a enseñar».", "friend": "Teófilo. El libro empieza con ese nombre."},
+  {"b": 0, "q": "Antes de subir al cielo, ¿qué les mandó Jesús a los apóstoles que esperaran en Jerusalén?", "o": ["La promesa del Padre: ser bautizados con el Espíritu Santo", "La reconstrucción del templo", "La llegada de un nuevo rey de Israel", "Una carta del sumo sacerdote"], "a": 0, "ref": "Hechos 1:4-5", "hint": "Juan bautizó con agua, pero ellos recibirían otro bautismo dentro de no muchos días.", "ex": "Jesús les mandó no irse de Jerusalén, sino esperar la promesa del Padre, porque serían bautizados con el Espíritu Santo dentro de no muchos días.", "friend": "La promesa del Padre, el Espíritu Santo. Lo que pasó en Pentecostés."},
+  {"b": 0, "q": "Mientras los apóstoles miraban al cielo después de la ascensión, ¿quiénes se pusieron junto a ellos?", "o": ["Moisés y Elías", "Un grupo de soldados romanos", "María y las otras mujeres", "Dos varones con vestiduras blancas"], "a": 3, "ref": "Hechos 1:10-11", "hint": "Les preguntaron por qué estaban mirando al cielo.", "ex": "Se pusieron junto a ellos dos varones con vestiduras blancas y les dijeron que Jesús vendría así como le habían visto ir al cielo.", "friend": "Dos varones vestidos de blanco. Moisés y Elías fueron en la transfiguración, no aquí."},
+  {"b": 0, "q": "En Pentecostés, ¿qué decían los que se burlaban de los discípulos?", "o": ["Que estaban locos", "Que estaban llenos de mosto", "Que eran espías de Roma", "Que eran magos"], "a": 1, "ref": "Hechos 2:13", "hint": "Pensaban que habían tomado algo. Pedro respondió que era muy temprano para eso.", "ex": "Otros, burlándose, decían: «Están llenos de mosto». Pedro respondió que no estaban ebrios, pues era la hora tercera del día.", "friend": "Decían que estaban borrachos, «llenos de mosto»."},
+  {"b": 0, "q": "¿Quién acompañaba a Pedro cuando subieron al templo y encontraron al hombre cojo?", "o": ["Juan", "Jacobo", "Andrés", "Bernabé"], "a": 0, "ref": "Hechos 3:1", "hint": "Es el mismo apóstol que estuvo con Pedro ante el concilio en el capítulo 4.", "ex": "Pedro y Juan subían juntos al templo a la hora novena, la de la oración.", "friend": "Juan. Pedro y Juan andaban juntos en esos capítulos."},
+  {"b": 1, "q": "Después de que soltaron a Pedro y Juan, los creyentes oraron juntos. ¿Qué pasó entonces?", "o": ["Cayó fuego del cielo", "Se abrieron las puertas de la cárcel", "El lugar tembló y todos fueron llenos del Espíritu Santo", "Llegó un ángel con un mensaje"], "a": 2, "ref": "Hechos 4:31", "hint": "Se movió el sitio donde estaban reunidos.", "ex": "Cuando hubieron orado, el lugar en que estaban congregados tembló; y todos fueron llenos del Espíritu Santo, y hablaban con denuedo la palabra de Dios.", "friend": "El lugar tembló. Y después hablaban con mucho valor."},
+  {"b": 1, "q": "¿Cómo compartían sus bienes los primeros creyentes?", "o": ["Cada uno guardaba lo suyo", "Tenían todas las cosas en común", "Solo los apóstoles podían tener bienes", "Lo daban todo a los sacerdotes del templo"], "a": 1, "ref": "Hechos 4:32", "hint": "Eran de un corazón y un alma, y nadie decía «esto es solo mío».", "ex": "La multitud de los que habían creído era de un corazón y un alma; ninguno decía ser suyo propio nada de lo que poseía, sino que tenían todas las cosas en común.", "friend": "Tenían todo en común. Nadie decía que algo era solo suyo."},
+  {"b": 1, "q": "¿Para qué sacaban a los enfermos a las calles cuando pasaba Pedro?", "o": ["Para que Pedro les diera dinero", "Para que Pedro los llevara al templo", "Para que Pedro les impusiera las manos uno por uno", "Para que a lo menos su sombra cayese sobre alguno de ellos"], "a": 3, "ref": "Hechos 5:15", "hint": "No hacía falta que Pedro se detuviera: bastaba con algo que hace el sol.", "ex": "Sacaban los enfermos a las calles y los ponían en camas y lechos, para que al pasar Pedro, a lo menos su sombra cayese sobre alguno de ellos.", "friend": "Lo de la sombra de Pedro. Me acuerdo porque es muy curioso."},
+  {"b": 1, "q": "Cuando el concilio les prohibió enseñar en el nombre de Jesús, ¿qué respondieron Pedro y los apóstoles?", "o": ["«Es necesario obedecer a Dios antes que a los hombres»", "«Haremos lo que ustedes digan»", "«Nos iremos de Jerusalén»", "«Solo enseñaremos en secreto»"], "a": 0, "ref": "Hechos 5:28-29", "hint": "No pensaban callarse: pusieron a Dios por encima de la orden del concilio.", "ex": "Respondiendo Pedro y los apóstoles, dijeron: Es necesario obedecer a Dios antes que a los hombres.", "friend": "La de obedecer a Dios antes que a los hombres. Esa es."},
+  {"b": 1, "q": "Cuando Esteban estaba ante el concilio, ¿cómo vieron su rostro?", "o": ["Lleno de miedo", "Como el rostro de un ángel", "Brillante como el sol", "Lleno de enojo"], "a": 1, "ref": "Hechos 6:15", "hint": "Lo compararon con un mensajero del cielo.", "ex": "Todos los que estaban sentados en el concilio, al fijar los ojos en él, vieron su rostro como el rostro de un ángel.", "friend": "Como el rostro de un ángel. Así termina el capítulo 6."},
+  {"b": 1, "q": "¿Por qué estaban resentidos los sacerdotes y los saduceos cuando arrestaron a Pedro y Juan?", "o": ["Porque no pagaban el tributo", "Porque habían entrado al lugar santísimo", "Porque cobraban por las sanidades", "Porque enseñaban al pueblo y anunciaban en Jesús la resurrección de entre los muertos"], "a": 3, "ref": "Hechos 4:1-3", "hint": "Tiene que ver con lo que Pedro predicaba sobre Jesús después de su muerte.", "ex": "Estaban resentidos de que enseñasen al pueblo y anunciasen en Jesús la resurrección de entre los muertos; les echaron mano y los pusieron en la cárcel.", "friend": "Por predicar la resurrección de Jesús. Eso les molestaba mucho."},
+  {"b": 1, "q": "¿Qué les pasó a Ananías y a Safira después de mentir?", "o": ["Quedaron ciegos", "Cayeron muertos", "Fueron expulsados de Jerusalén", "Fueron encarcelados por Herodes"], "a": 1, "ref": "Hechos 5:5,10", "hint": "Vino gran temor sobre todos los que lo oyeron.", "ex": "Al oír las palabras de Pedro, Ananías cayó y expiró. Unas horas después, Safira cayó también a los pies de Pedro y expiró.", "friend": "Los dos murieron. Por eso hubo gran temor en la iglesia."},
+  {"b": 1, "q": "Cuando los apóstoles estaban en la cárcel pública, ¿quién les abrió las puertas?", "o": ["Gamaliel", "Un carcelero que creyó", "Un ángel del Señor, de noche", "Un terremoto"], "a": 2, "ref": "Hechos 5:18-19", "hint": "Pasó de noche y luego los mandó a hablar en el templo.", "ex": "Un ángel del Señor, abriendo de noche las puertas de la cárcel y sacándolos, les dijo que fueran al templo a anunciar al pueblo las palabras de esta vida.", "friend": "Un ángel. El terremoto en la cárcel es otra historia, de Pablo y Silas."},
+  {"b": 1, "q": "Después de ser azotados por el concilio, ¿cómo salieron los apóstoles?", "o": ["Gozosos de haber sido tenidos por dignos de padecer afrenta por causa del Nombre", "Tristes y decididos a dejar de predicar", "Escondiéndose de los guardias", "Enojados contra Gamaliel"], "a": 0, "ref": "Hechos 5:40-42", "hint": "Su reacción fue la contraria a lo que uno esperaría.", "ex": "Salieron de la presencia del concilio gozosos de haber sido tenidos por dignos de padecer afrenta por causa del Nombre, y no cesaban de enseñar.", "friend": "Salieron contentos, aunque los azotaron. Siguieron predicando."},
+  {"b": 1, "q": "¿Cuántos varones escogieron para atender el servicio de las mesas?", "o": ["Doce", "Tres", "Siete", "Setenta"], "a": 2, "ref": "Hechos 6:3", "hint": "Uno de ellos fue Esteban y otro, Felipe.", "ex": "Los apóstoles pidieron buscar entre ellos a siete varones de buen testimonio, llenos del Espíritu Santo y de sabiduría.", "friend": "Siete. Se les conoce como «los siete»."},
+  {"b": 2, "q": "¿Cómo murió Esteban?", "o": ["Lo crucificaron", "Lo echaron a los leones", "Lo mataron a espada", "Lo echaron fuera de la ciudad y lo apedrearon"], "a": 3, "ref": "Hechos 7:58-60", "hint": "Los testigos se quitaron la ropa para poder hacerlo.", "ex": "Echándole fuera de la ciudad, le apedrearon. Esteban, puesto de rodillas, clamó a gran voz: Señor, no les tomes en cuenta este pecado.", "friend": "Lo apedrearon fuera de la ciudad. Lo de la espada le pasó a Jacobo, en el capítulo 12."},
+  {"b": 2, "q": "¿A qué ciudad descendió Felipe para predicar a Cristo?", "o": ["Samaria", "Roma", "Atenas", "Nazaret"], "a": 0, "ref": "Hechos 8:5", "hint": "Aparece en la lista de Hechos 1:8, justo después de Judea.", "ex": "Felipe, descendiendo a la ciudad de Samaria, les predicaba a Cristo.", "friend": "Samaria. Ahí también estaba Simón el mago."},
+  {"b": 2, "q": "Cuando el eunuco etíope vio agua en el camino, ¿qué pidió?", "o": ["Detenerse a beber", "Lavar su carro", "Ser bautizado", "Que Felipe se fuera"], "a": 2, "ref": "Hechos 8:36-38", "hint": "Preguntó: «¿Qué impide que yo…?»", "ex": "El eunuco dijo: Aquí hay agua; ¿qué impide que yo sea bautizado? Mandó parar el carro, descendieron ambos al agua y Felipe le bautizó.", "friend": "Quería ser bautizado. Bajaron los dos al agua."},
+  {"b": 2, "q": "En el camino a Damasco, ¿qué le dijo la voz a Saulo?", "o": ["«Saulo, vuelve a Jerusalén»", "«Saulo, Saulo, ¿por qué me persigues?»", "«Saulo, tú serás rey»", "«Saulo, no tengas miedo»"], "a": 1, "ref": "Hechos 9:3-5", "hint": "Fue una pregunta, y dijo su nombre dos veces.", "ex": "Le rodeó un resplandor de luz del cielo; y cayendo en tierra, oyó una voz que le decía: Saulo, Saulo, ¿por qué me persigues?", "friend": "«Saulo, Saulo, ¿por qué me persigues?» Era Jesús hablándole."},
+  {"b": 2, "q": "En Jope murió una discípula llamada Tabita (Dorcas). ¿Qué pasó cuando llegó Pedro?", "o": ["La enterraron con honores", "Pedro se fue sin entrar a verla", "La llevaron a Jerusalén", "Pedro oró, dijo «Tabita, levántate» y ella abrió los ojos"], "a": 3, "ref": "Hechos 9:36-41", "hint": "Pedro hizo salir a todos del cuarto antes de ponerse de rodillas.", "ex": "Pedro, sacando a todos, se puso de rodillas y oró; y volviéndose al cuerpo, dijo: Tabita, levántate. Y ella abrió los ojos y, al ver a Pedro, se incorporó.", "friend": "¡Volvió a la vida! Pedro le dijo «Tabita, levántate»."},
+  {"b": 2, "q": "Mientras lo apedreaban, ¿qué pidió Esteban por los que lo mataban?", "o": ["Que cayera fuego del cielo sobre ellos", "«Señor, no les tomes en cuenta este pecado»", "Que el concilio los juzgara", "Que Dios lo vengara"], "a": 1, "ref": "Hechos 7:59-60", "hint": "Se parece a lo que Jesús dijo en la cruz.", "ex": "Puesto de rodillas, clamó a gran voz: «Señor, no les tomes en cuenta este pecado». Y habiendo dicho esto, durmió.", "friend": "Pidió perdón para ellos, como hizo Jesús."},
+  {"b": 2, "q": "Después de la muerte de Esteban, ¿qué hacía Saulo contra la iglesia?", "o": ["Escribía cartas defendiendo a los discípulos", "Se escondió en Tarso", "Predicaba en las sinagogas", "Entraba casa por casa, arrastraba a hombres y mujeres y los entregaba en la cárcel"], "a": 3, "ref": "Hechos 8:3", "hint": "Todavía no se había convertido.", "ex": "Saulo asolaba la iglesia: entrando casa por casa, arrastraba a hombres y a mujeres, y los entregaba en la cárcel.", "friend": "Los perseguía casa por casa y los metía presos."},
+  {"b": 2, "q": "Después de la luz en el camino a Damasco, ¿cómo quedó Saulo?", "o": ["Ciego, y estuvo tres días sin ver, sin comer ni beber", "Sordo por una semana", "Mudo hasta llegar a Jerusalén", "Con lepra en las manos"], "a": 0, "ref": "Hechos 9:8-9", "hint": "Tuvieron que llevarlo de la mano a Damasco.", "ex": "Saulo se levantó de tierra y, abriendo los ojos, no veía a nadie. Estuvo tres días sin ver, y no comió ni bebió.", "friend": "Quedó ciego tres días. Lo llevaron de la mano."},
+  {"b": 2, "q": "¿A quién envió el Señor para que Saulo recobrara la vista?", "o": ["Pedro", "Felipe", "Ananías", "Bernabé"], "a": 2, "ref": "Hechos 9:10-17", "hint": "Tiene el mismo nombre que el hombre que mintió con su esposa en el capítulo 5, pero es otra persona.", "ex": "El Señor envió a Ananías, un discípulo de Damasco. Le puso las manos encima a Saulo y él recibió la vista.", "friend": "Ananías, el de Damasco. No es el del capítulo 5."},
+  {"b": 2, "q": "En Jerusalén todos le tenían miedo a Saulo. ¿Quién lo llevó a los apóstoles?", "o": ["Gamaliel", "Bernabé", "Juan Marcos", "Esteban"], "a": 1, "ref": "Hechos 9:26-27", "hint": "Su nombre significa «hijo de consolación».", "ex": "Bernabé, tomándole, lo trajo a los apóstoles y les contó cómo Saulo había visto al Señor en el camino y había hablado con valor en Damasco.", "friend": "Bernabé. Siempre ayudando a otros."},
+  {"b": 3, "q": "En casa de Cornelio, ¿qué dijo Pedro que comprendía en verdad?", "o": ["Que Dios no hace acepción de personas", "Que solo los judíos podían ser salvos", "Que debía volver a Jerusalén", "Que Cornelio debía hacerse judío"], "a": 0, "ref": "Hechos 10:34-35", "hint": "Tiene que ver con que Cornelio no era judío.", "ex": "Pedro dijo: En verdad comprendo que Dios no hace acepción de personas, sino que en toda nación se agrada del que le teme y hace justicia.", "friend": "Que Dios no hace acepción de personas. O sea, no tiene favoritos."},
+  {"b": 3, "q": "Mientras Pedro aún hablaba en casa de Cornelio, ¿qué sucedió?", "o": ["Llegaron soldados a arrestar a Pedro", "Un ángel se apareció a todos", "El Espíritu Santo cayó sobre todos los que oían el discurso", "Cornelio pidió que Pedro se fuera"], "a": 2, "ref": "Hechos 10:44-45", "hint": "Los creyentes judíos que venían con Pedro se quedaron atónitos de que eso les pasara a los gentiles.", "ex": "Mientras aún hablaba Pedro, el Espíritu Santo cayó sobre todos los que oían el discurso, y los fieles de la circuncisión se quedaron atónitos.", "friend": "El Espíritu Santo cayó sobre todos, como en Pentecostés."},
+  {"b": 3, "q": "¿A qué apóstol mató a espada el rey Herodes?", "o": ["Pedro", "Juan", "Andrés", "Jacobo, hermano de Juan"], "a": 3, "ref": "Hechos 12:1-2", "hint": "Era hermano de otro apóstol que aparece en estas opciones.", "ex": "El rey Herodes echó mano a algunos de la iglesia para maltratarles, y mató a espada a Jacobo, hermano de Juan.", "friend": "Jacobo, el hermano de Juan. A Pedro lo metió en la cárcel."},
+  {"b": 3, "q": "Mientras Pedro estaba preso, ¿qué hacía la iglesia?", "o": ["Se escondía en Galilea", "Hacía sin cesar oración a Dios por él", "Juntaba dinero para pagar su salida", "Elegía a otro apóstol"], "a": 1, "ref": "Hechos 12:5", "hint": "No intentaron sacarlo por la fuerza: acudieron a Dios.", "ex": "Pedro estaba custodiado en la cárcel; pero la iglesia hacía sin cesar oración a Dios por él.", "friend": "Oraban sin parar por él. Por eso luego se sorprendieron cuando llegó."},
+  {"b": 3, "q": "¿Quién sacó a Pedro de la cárcel?", "o": ["Los soldados, que se compadecieron de él", "Herodes, que cambió de opinión", "Un ángel del Señor", "Juan, que consiguió la llave"], "a": 2, "ref": "Hechos 12:7-10", "hint": "Una luz resplandeció en la cárcel y alguien lo tocó en el costado.", "ex": "Se presentó un ángel del Señor, una luz resplandeció en la cárcel, y tocando a Pedro en el costado le despertó; y las cadenas se le cayeron de las manos.", "friend": "Un ángel. Pedro hasta creyó que estaba viendo una visión."},
+  {"b": 3, "q": "¿A quién le dijo el ángel a Cornelio que mandara buscar en Jope?", "o": ["A Simón, el que tiene por sobrenombre Pedro", "A Felipe el evangelista", "A Saulo de Tarso", "A Juan Marcos"], "a": 0, "ref": "Hechos 10:5", "hint": "Estaba hospedado en casa de un curtidor.", "ex": "El ángel le dijo: «Envía, pues, ahora hombres a Jope, y haz venir a Simón, el que tiene por sobrenombre Pedro».", "friend": "A Pedro. Estaba en Jope."},
+  {"b": 3, "q": "En la visión de Pedro, ¿qué bajaba del cielo?", "o": ["Una escalera con ángeles", "Una mesa con panes y peces", "Un gran lienzo con cuadrúpedos, reptiles y aves", "Una nube de fuego"], "a": 2, "ref": "Hechos 10:11-12", "hint": "Estaba atado de las cuatro puntas.", "ex": "Vio el cielo abierto y que descendía algo semejante a un gran lienzo, atado de las cuatro puntas, con toda clase de cuadrúpedos, reptiles y aves.", "friend": "Un lienzo grande lleno de animales."},
+  {"b": 3, "q": "Después de que la casa de Cornelio recibió el Espíritu Santo, ¿qué mandó Pedro?", "o": ["Que se circuncidaran primero", "Que fueran a Jerusalén", "Que guardaran silencio", "Que fueran bautizados en el nombre del Señor Jesús"], "a": 3, "ref": "Hechos 10:47-48", "hint": "Pedro preguntó si alguien podía impedir el agua.", "ex": "Pedro dijo: «¿Puede acaso alguno impedir el agua, para que no sean bautizados éstos?». Y mandó bautizarles en el nombre del Señor Jesús.", "friend": "Mandó bautizarlos. Ya habían recibido el Espíritu."},
+  {"b": 3, "q": "Cuando supieron en Jerusalén que muchos creían en Antioquía, ¿a quién enviaron?", "o": ["Pedro", "Bernabé", "Jacobo", "Felipe"], "a": 1, "ref": "Hechos 11:22", "hint": "Después fue a Tarso a buscar a Saulo.", "ex": "La noticia llegó a oídos de la iglesia de Jerusalén, y enviaron a Bernabé que fuese hasta Antioquía.", "friend": "Bernabé. Luego trajo a Saulo."},
+  {"b": 3, "q": "La noche antes de que Herodes lo iba a sacar, ¿cómo estaba Pedro?", "o": ["Orando despierto en el patio", "Escribiendo una carta", "Escapando por una ventana", "Durmiendo entre dos soldados, sujeto con dos cadenas"], "a": 3, "ref": "Hechos 12:6", "hint": "Estaba tan tranquilo que el ángel tuvo que despertarlo.", "ex": "Pedro estaba durmiendo entre dos soldados, sujeto con dos cadenas, y los guardas delante de la puerta custodiaban la cárcel.", "friend": "Dormido entre dos soldados y encadenado."}
+ ]},
+ medio:{name:"Medio",n:2,desc:"Personajes y escenas clave de cada capítulo, con un poco más de detalle.",q:[
+  {"b": 0, "q": "¿Durante cuántos días se apareció Jesús a los apóstoles después de resucitar?", "o": ["7 días", "12 días", "40 días", "50 días"], "a": 2, "ref": "Hechos 1:3", "hint": "Es el mismo número de días que Jesús ayunó en el desierto antes de empezar su ministerio.", "ex": "Jesús se presentó vivo a los apóstoles durante cuarenta días, hablándoles del reino de Dios.", "friend": "Me suena que son 40. Los 50 son de Pentecostés, no de las apariciones."},
+  {"b": 0, "q": "¿Quién fue escogido para ocupar el lugar de Judas entre los apóstoles?", "o": ["José Barsabás", "Bernabé", "Esteban", "Matías"], "a": 3, "ref": "Hechos 1:23-26", "hint": "Había dos candidatos y se echaron suertes. Ganó el que no tenía el sobrenombre de Justo.", "ex": "Presentaron a José llamado Barsabás (Justo) y a Matías. Oraron, echaron suertes y la suerte cayó sobre Matías.", "friend": "Estoy bastante seguro: Matías. Barsabás fue el otro candidato."},
+  {"b": 0, "q": "Según Hechos 1:8, ¿dónde serían testigos de Jesús los apóstoles?", "o": ["Solo en Jerusalén", "En Jerusalén, Judea, Samaria y hasta lo último de la tierra", "En Galilea y en Roma", "En Egipto y Babilonia"], "a": 1, "ref": "Hechos 1:8", "hint": "La lista va de lo más cercano a lo más lejano. Este cuestionario sigue esa misma ruta.", "ex": "Jesús prometió poder del Espíritu Santo para ser testigos en Jerusalén, Judea, Samaria y hasta lo último de la tierra.", "friend": "La que dice Jerusalén, Judea, Samaria y lo último de la tierra. Es el versículo clave del libro."},
+  {"b": 0, "q": "¿Cuántas personas se añadieron a la iglesia el día de Pentecostés?", "o": ["Unas 120", "Unas 3.000", "Unas 5.000", "Unas 500"], "a": 1, "ref": "Hechos 2:41", "hint": "120 eran los reunidos antes de Pentecostés (1:15) y 5.000 aparece más adelante, en el capítulo 4.", "ex": "Los que recibieron la palabra de Pedro fueron bautizados, y se añadieron aquel día como tres mil personas.", "friend": "Creo que 3.000. Los 5.000 son del capítulo 4, si no me equivoco."},
+  {"b": 0, "q": "¿En qué puerta del templo pedía limosna el hombre cojo de nacimiento?", "o": ["La puerta Hermosa", "La puerta de las Ovejas", "La puerta del Pescado", "La puerta Dorada"], "a": 0, "ref": "Hechos 3:2", "hint": "El nombre de la puerta describe cómo se veía.", "ex": "Lo ponían cada día a la puerta del templo que se llama la Hermosa. Pedro y Juan lo encontraron a la hora novena.", "friend": "La Hermosa, seguro. Ahí fue donde Pedro le dijo que no tenía plata ni oro."},
+  {"b": 0, "q": "Antes de la ascensión, ¿qué le preguntaron los apóstoles a Jesús?", "o": ["«Señor, ¿quién será el mayor entre nosotros?»", "«Señor, ¿restaurarás el reino a Israel en este tiempo?»", "«Señor, ¿cuándo será destruido el templo?»", "«Señor, ¿adónde vas?»"], "a": 1, "ref": "Hechos 1:6", "hint": "Tenía que ver con el reino de Israel.", "ex": "Le preguntaron: «Señor, ¿restaurarás el reino a Israel en este tiempo?». Jesús respondió que no les tocaba saber los tiempos o las sazones.", "friend": "Le preguntaron por el reino de Israel."},
+  {"b": 0, "q": "Después de la ascensión, ¿a qué lugar subieron los apóstoles al volver a Jerusalén?", "o": ["Al pórtico de Salomón", "A la casa de Caifás", "Al huerto de Getsemaní", "Al aposento alto"], "a": 3, "ref": "Hechos 1:13", "hint": "Allí moraban Pedro, Jacobo, Juan y los demás.", "ex": "Entrados en Jerusalén, subieron al aposento alto, donde moraban los once, y perseveraban unánimes en oración.", "friend": "Al aposento alto. Ahí se quedaban."},
+  {"b": 0, "q": "¿Cuántas personas estaban reunidas cuando Pedro propuso reemplazar a Judas?", "o": ["Como 120", "Como 70", "Como 500", "Como 3.000"], "a": 0, "ref": "Hechos 1:15", "hint": "Es diez veces el número de los apóstoles.", "ex": "Pedro se levantó en medio de los hermanos, y los reunidos eran como ciento veinte en número.", "friend": "Eran unos 120. Los 3.000 vienen después."},
+  {"b": 0, "q": "En Pentecostés, ¿qué dejó confundida a la multitud?", "o": ["Que el templo se llenó de humo", "Que los apóstoles volaban", "Que cada uno los oía hablar en su propia lengua", "Que el sol se oscureció"], "a": 2, "ref": "Hechos 2:6-8", "hint": "Había gente de muchas naciones.", "ex": "La multitud estaba confusa, porque cada uno les oía hablar en su propia lengua.", "friend": "Cada uno los escuchaba en su propio idioma."},
+  {"b": 0, "q": "Según Hechos 2:42, ¿en qué perseveraban los primeros creyentes?", "o": ["En el ayuno, la limosna y los sacrificios", "En la ley, los profetas y los salmos", "En las fiestas, el templo y los diezmos", "En la doctrina de los apóstoles, la comunión, el partimiento del pan y las oraciones"], "a": 3, "ref": "Hechos 2:42", "hint": "Son cuatro cosas, y una tiene que ver con el pan.", "ex": "Perseveraban en la doctrina de los apóstoles, en la comunión unos con otros, en el partimiento del pan y en las oraciones.", "friend": "Doctrina, comunión, partimiento del pan y oraciones."},
+  {"b": 1, "q": "Además de los sacerdotes y el jefe de la guardia, ¿qué grupo arrestó a Pedro y Juan por anunciar la resurrección?", "o": ["Los fariseos", "Los zelotes", "Los saduceos", "Los esenios"], "a": 2, "ref": "Hechos 4:1-3", "hint": "Este grupo negaba la resurrección (Hechos 23:8), por eso les molestaba el mensaje.", "ex": "Los sacerdotes, el jefe de la guardia del templo y los saduceos vinieron sobre ellos, resentidos porque anunciaban en Jesús la resurrección.", "friend": "Diría que los saduceos, porque no creían en la resurrección. Los fariseos sí creían."},
+  {"b": 1, "q": "¿Qué significa el nombre Bernabé, según Hechos 4?", "o": ["Hijo del trueno", "Hijo de consolación", "Hijo de la promesa", "Hijo de paz"], "a": 1, "ref": "Hechos 4:36", "hint": "«Hijo del trueno» era el apodo de Jacobo y Juan (Marcos 3:17), no el de Bernabé.", "ex": "José, levita natural de Chipre, recibió de los apóstoles el sobrenombre de Bernabé, que traducido es Hijo de consolación.", "friend": "Hijo de consolación. Lo del trueno es de Jacobo y Juan."},
+  {"b": 1, "q": "¿Cuál fue el pecado de Ananías y Safira?", "o": ["Robaron dinero del templo", "Adoraron ídolos", "Negaron a Jesús ante el concilio", "Mintieron sobre el precio de una propiedad que vendieron"], "a": 3, "ref": "Hechos 5:1-4", "hint": "Pedro le dijo a Ananías que no había mentido a los hombres, sino a Dios.", "ex": "Vendieron una heredad, se quedaron con parte del dinero y presentaron el resto como si fuera todo. Pedro les dijo que habían mentido a Dios.", "friend": "Fue por mentir sobre el dinero de la venta. Podían quedárselo, el problema fue la mentira."},
+  {"b": 1, "q": "¿Qué fariseo, doctor de la ley, aconsejó al concilio dejar en paz a los apóstoles?", "o": ["Gamaliel", "Nicodemo", "Caifás", "Anás"], "a": 0, "ref": "Hechos 5:34-39", "hint": "Años después, Pablo contó que se formó a los pies de este maestro (Hechos 22:3).", "ex": "Gamaliel, venerado por todo el pueblo, dijo que si la obra era de hombres se desharía, pero si era de Dios no la podrían destruir.", "friend": "Gamaliel. Caifás y Anás eran sumos sacerdotes, no los que defendieron a los apóstoles."},
+  {"b": 1, "q": "¿Por qué se escogieron siete varones en Hechos 6?", "o": ["Para predicar en Samaria", "Para reemplazar a los apóstoles", "Porque las viudas de los griegos eran desatendidas en la distribución diaria", "Para reconstruir el templo"], "a": 2, "ref": "Hechos 6:1-3", "hint": "Todo empezó con una queja sobre la ayuda diaria a un grupo de mujeres.", "ex": "Hubo murmuración de los griegos contra los hebreos porque sus viudas eran desatendidas. Los apóstoles pidieron siete varones llenos del Espíritu y de sabiduría para ese trabajo.", "friend": "Por el problema con las viudas de los griegos. Así los apóstoles podían dedicarse a orar y enseñar."},
+  {"b": 1, "q": "Después de la predicación en el templo, ¿a cuántos llegó el número de los varones que creyeron?", "o": ["Como cinco mil", "Como tres mil", "Como mil", "Como diez mil"], "a": 0, "ref": "Hechos 4:4", "hint": "Es un número mayor que el de Pentecostés.", "ex": "Muchos de los que habían oído la palabra creyeron, y el número de los varones era como cinco mil.", "friend": "Cinco mil varones. Los tres mil fueron en Pentecostés."},
+  {"b": 1, "q": "¿Por qué se maravillaban las autoridades al ver el denuedo de Pedro y Juan?", "o": ["Porque eran sacerdotes", "Porque eran ricos", "Porque eran hombres sin letras y del vulgo", "Porque eran romanos"], "a": 2, "ref": "Hechos 4:13", "hint": "No habían estudiado en las escuelas de los rabinos.", "ex": "Viendo el denuedo de Pedro y Juan, y sabiendo que eran hombres sin letras y del vulgo, se maravillaban; y les reconocían que habían estado con Jesús.", "friend": "Porque eran gente sencilla, sin estudios."},
+  {"b": 1, "q": "¿De dónde era natural Bernabé?", "o": ["De Tarso", "De Chipre", "De Galilea", "De Alejandría"], "a": 1, "ref": "Hechos 4:36", "hint": "Es una isla del Mediterráneo.", "ex": "José, a quien los apóstoles pusieron por sobrenombre Bernabé, era levita, natural de Chipre.", "friend": "De Chipre. Era levita."},
+  {"b": 1, "q": "En el capítulo 5, ¿dónde estaban todos unánimes mientras los apóstoles hacían muchas señales?", "o": ["En el aposento alto", "En la sinagoga de los libertos", "En el monte del Olivar", "En el pórtico de Salomón"], "a": 3, "ref": "Hechos 5:12", "hint": "Es el mismo lugar donde Pedro predicó después de sanar al cojo.", "ex": "Por la mano de los apóstoles se hacían muchas señales y prodigios en el pueblo; y estaban todos unánimes en el pórtico de Salomón.", "friend": "En el pórtico de Salomón, en el templo."},
+  {"b": 1, "q": "Al escoger a los siete, ¿a qué dijeron los apóstoles que se dedicarían ellos?", "o": ["A la oración y al ministerio de la palabra", "A administrar el dinero", "A visitar a los enfermos", "A viajar a otras ciudades"], "a": 0, "ref": "Hechos 6:4", "hint": "Son dos cosas.", "ex": "Dijeron: «Nosotros persistiremos en la oración y en el ministerio de la palabra».", "friend": "A orar y a predicar la palabra."},
+  {"b": 2, "q": "Cuando apedrearon a Esteban, ¿a los pies de quién pusieron los testigos sus ropas?", "o": ["Pedro", "Felipe", "Saulo", "Gamaliel"], "a": 2, "ref": "Hechos 7:58", "hint": "Era un joven que dos capítulos después tendrá un encuentro con Jesús camino a Damasco.", "ex": "Los testigos pusieron sus ropas a los pies de un joven que se llamaba Saulo, quien consentía en la muerte de Esteban (8:1).", "friend": "Saulo, el que luego sería Pablo. Estoy casi seguro."},
+  {"b": 2, "q": "¿Qué intentó hacer Simón el mago en Samaria?", "o": ["Comprar con dinero el poder de dar el Espíritu Santo", "Hacerse pasar por apóstol", "Encarcelar a Felipe", "Quemar sus libros de magia"], "a": 0, "ref": "Hechos 8:18-20", "hint": "De su nombre viene la palabra «simonía», que significa comerciar con lo sagrado.", "ex": "Al ver que por la imposición de manos se daba el Espíritu Santo, Simón ofreció dinero a Pedro y Juan para recibir ese poder. Pedro lo reprendió.", "friend": "Quiso comprar el poder con dinero. Lo de quemar libros de magia pasa en Éfeso, mucho después."},
+  {"b": 2, "q": "¿Qué profeta iba leyendo el eunuco etíope cuando Felipe se le acercó?", "o": ["Jeremías", "Isaías", "Daniel", "Ezequiel"], "a": 1, "ref": "Hechos 8:28-35", "hint": "El pasaje habla de alguien llevado como oveja al matadero.", "ex": "El eunuco leía al profeta Isaías. Felipe le preguntó si entendía lo que leía, y a partir de ese pasaje le anunció a Jesús.", "friend": "Isaías, el pasaje de la oveja. Me lo sé porque es de Isaías 53."},
+  {"b": 2, "q": "¿Cómo se llamaba la calle de Damasco donde Ananías encontró a Saulo?", "o": ["Hermosa", "Mayor", "Derecha", "de los Mercaderes"], "a": 2, "ref": "Hechos 9:11", "hint": "El nombre describe la forma de la calle: sin curvas.", "ex": "El Señor le dijo a Ananías que fuera a la calle que se llama Derecha y buscara en casa de Judas a Saulo de Tarso.", "friend": "Creo que era la calle Derecha. La Hermosa era una puerta del templo, no una calle."},
+  {"b": 2, "q": "¿Cómo escapó Saulo de Damasco cuando querían matarlo?", "o": ["Un ángel lo sacó de la cárcel", "Lo bajaron de noche por el muro en una canasta", "Huyó disfrazado de soldado", "Salió en un barco"], "a": 1, "ref": "Hechos 9:23-25", "hint": "Vigilaban las puertas de la ciudad, así que había que salir por otro lado.", "ex": "Los judíos guardaban las puertas día y noche, pero los discípulos lo bajaron de noche por el muro, descolgándolo en una canasta.", "friend": "Lo de la canasta por el muro. Lo del ángel en la cárcel le pasó a Pedro."},
+  {"b": 2, "q": "Antes de morir, ¿qué dijo Esteban que veía?", "o": ["Un carro de fuego", "Una escalera hasta el cielo", "Los cielos abiertos y al Hijo del Hombre a la diestra de Dios", "Al ángel Gabriel"], "a": 2, "ref": "Hechos 7:55-56", "hint": "Miró al cielo, lleno del Espíritu Santo.", "ex": "Dijo: «He aquí, veo los cielos abiertos, y al Hijo del Hombre que está a la diestra de Dios».", "friend": "Vio el cielo abierto y a Jesús a la derecha de Dios."},
+  {"b": 2, "q": "Cuando la iglesia fue esparcida por Judea y Samaria, ¿quiénes se quedaron en Jerusalén?", "o": ["Los siete", "Los apóstoles", "Las viudas", "Los fariseos creyentes"], "a": 1, "ref": "Hechos 8:1", "hint": "Fueron los únicos que no salieron.", "ex": "Todos fueron esparcidos por las tierras de Judea y de Samaria, salvo los apóstoles.", "friend": "Los apóstoles se quedaron."},
+  {"b": 2, "q": "Cuando Samaria recibió la palabra, ¿a quiénes enviaron los apóstoles desde Jerusalén?", "o": ["A Bernabé y a Saulo", "A Felipe y a Esteban", "A Jacobo y a Andrés", "A Pedro y a Juan"], "a": 3, "ref": "Hechos 8:14", "hint": "Es la misma pareja del capítulo 3.", "ex": "Cuando los apóstoles que estaban en Jerusalén oyeron que Samaria había recibido la palabra, les enviaron a Pedro y a Juan.", "friend": "Pedro y Juan, otra vez juntos."},
+  {"b": 2, "q": "¿Qué le pidió Saulo al sumo sacerdote antes de ir a Damasco?", "o": ["Cartas para las sinagogas, para traer presos a los que fuesen del Camino", "Soldados para destruir la ciudad", "Permiso para predicar allí", "Dinero para el viaje"], "a": 0, "ref": "Hechos 9:1-2", "hint": "Quería llevar a Jerusalén a hombres y mujeres.", "ex": "Saulo pidió cartas para las sinagogas de Damasco, a fin de que, si hallase algunos hombres o mujeres de este Camino, los trajese presos a Jerusalén.", "friend": "Cartas para arrestar a los del Camino."},
+  {"b": 2, "q": "¿En qué ciudad sanó Pedro al paralítico Eneas?", "o": ["Jope", "Cesarea", "Lida", "Gaza"], "a": 2, "ref": "Hechos 9:32-34", "hint": "Está cerca de Jope, adonde Pedro fue después.", "ex": "Pedro vino a los santos que habitaban en Lida y halló a uno que se llamaba Eneas. Le dijo: «Eneas, Jesucristo te sana».", "friend": "En Lida. Después lo llamaron a Jope."},
+  {"b": 3, "q": "¿Quién era Cornelio?", "o": ["Un sacerdote judío de Jerusalén", "Un pescador de Jope", "Un centurión romano de Cesarea", "Un recaudador de impuestos"], "a": 2, "ref": "Hechos 10:1-2", "hint": "Pertenecía a la compañía llamada la Italiana.", "ex": "Cornelio era centurión de la compañía llamada la Italiana, en Cesarea. Era piadoso, temeroso de Dios, daba limosnas y oraba siempre.", "friend": "Era un centurión romano, de los que mandaban soldados. Vivía en Cesarea."},
+  {"b": 3, "q": "En la visión de Pedro, ¿cuántas veces bajó el lienzo con los animales?", "o": ["Una vez", "Dos veces", "Tres veces", "Siete veces"], "a": 2, "ref": "Hechos 10:16", "hint": "El mismo número de veces que Pedro negó a Jesús.", "ex": "Esto se hizo tres veces, y luego el lienzo volvió a ser recogido en el cielo.", "friend": "Tres veces, como cuando negó a Jesús. Creo que esa es."},
+  {"b": 3, "q": "¿En qué ciudad se llamó «cristianos» a los discípulos por primera vez?", "o": ["Jerusalén", "Damasco", "Roma", "Antioquía"], "a": 3, "ref": "Hechos 11:26", "hint": "Bernabé y Saulo enseñaron allí durante un año entero. Era la capital de la provincia de Siria.", "ex": "Bernabé trajo a Saulo desde Tarso; enseñaron un año entero, y a los discípulos se les llamó cristianos por primera vez en Antioquía.", "friend": "Antioquía. Ahí estuvieron Bernabé y Saulo un año."},
+  {"b": 3, "q": "¿Qué anunció el profeta Agabo en Antioquía?", "o": ["Una gran hambre en toda la tierra", "La muerte del rey Herodes", "Un gran terremoto", "La destrucción del templo"], "a": 0, "ref": "Hechos 11:27-30", "hint": "Se cumplió en tiempos del emperador Claudio, y los discípulos enviaron ayuda a Judea.", "ex": "Agabo dio a entender por el Espíritu que vendría una gran hambre, que sucedió en tiempo de Claudio. Los discípulos enviaron ayuda por mano de Bernabé y Saulo.", "friend": "Una hambruna. Por eso hicieron una ofrenda para los hermanos de Judea."},
+  {"b": 3, "q": "¿Cómo se llamaba la muchacha que, de tanta alegría, no le abrió la puerta a Pedro?", "o": ["Tabita", "Rode", "Lidia", "Safira"], "a": 1, "ref": "Hechos 12:13-14", "hint": "Tabita es de Jope (cap. 9) y Lidia aparece hasta el capítulo 16.", "ex": "En casa de María, madre de Juan Marcos, salió a escuchar una muchacha llamada Rode. Reconoció la voz de Pedro y, de gozo, corrió a avisar sin abrir.", "friend": "Rode. Me acuerdo porque le dijeron que estaba loca."},
+  {"b": 3, "q": "¿Qué le dijo el ángel a Cornelio sobre sus oraciones y limosnas?", "o": ["Que no servían de nada", "Que debía darlas en el templo", "Que debía dejar el ejército", "Que habían subido para memoria delante de Dios"], "a": 3, "ref": "Hechos 10:3-4", "hint": "Dios las había tomado en cuenta.", "ex": "El ángel le dijo: «Tus oraciones y tus limosnas han subido para memoria delante de Dios».", "friend": "Que Dios las había recordado."},
+  {"b": 3, "q": "Cuando Pedro dijo que nunca había comido nada común o inmundo, ¿qué le respondió la voz?", "o": ["«Lo que Dios limpió, no lo llames tú común»", "«Entonces no comas»", "«Ve y ofrece sacrificio»", "«Lávate y luego come»"], "a": 0, "ref": "Hechos 10:14-15", "hint": "Habla de lo que Dios ha limpiado.", "ex": "La voz le dijo por segunda vez: «Lo que Dios limpió, no lo llames tú común».", "friend": "Lo que Dios limpió no es común. Esa es la frase."},
+  {"b": 3, "q": "Al volver a Jerusalén, ¿qué le reprocharon a Pedro los que eran de la circuncisión?", "o": ["Que había bautizado a un samaritano", "Que había entrado en casa de incircuncisos y había comido con ellos", "Que no había orado", "Que había hablado con Herodes"], "a": 1, "ref": "Hechos 11:2-3", "hint": "Tenía que ver con una visita a gentiles.", "ex": "Le dijeron: «¿Por qué has entrado en casa de hombres incircuncisos, y has comido con ellos?».", "friend": "Que comió con gentiles en casa de Cornelio."},
+  {"b": 3, "q": "¿A qué ciudad fue Bernabé a buscar a Saulo?", "o": ["Damasco", "Roma", "Tarso", "Corinto"], "a": 2, "ref": "Hechos 11:25", "hint": "Es la ciudad natal de Saulo.", "ex": "Bernabé fue a Tarso para buscar a Saulo, y hallándole, le trajo a Antioquía.", "friend": "A Tarso, donde había nacido Saulo."},
+  {"b": 3, "q": "¿Cuánto tiempo estuvieron Bernabé y Saulo enseñando con la iglesia en Antioquía?", "o": ["Tres meses", "Todo un año", "Tres años", "Cuarenta días"], "a": 1, "ref": "Hechos 11:26", "hint": "En ese tiempo empezaron a llamarlos «cristianos».", "ex": "Se congregaron allí todo un año con la iglesia y enseñaron a mucha gente.", "friend": "Un año entero en Antioquía."}
+ ]},
+ dificil:{name:"Difícil",n:3,desc:"Detalles precisos del texto: nombres, horas, lugares y números.",q:[
+  {"b": 0, "q": "Después de la ascensión, ¿desde qué monte volvieron los apóstoles a Jerusalén, y a qué distancia estaba?", "o": ["El monte de Sion, a una milla", "El monte Carmelo, a tres días de camino", "El monte del Olivar, camino de un día de reposo", "El monte Tabor, a medio día de camino"], "a": 2, "ref": "Hechos 1:12", "hint": "Estaba cerca de Jerusalén; la distancia se mide con lo que se podía caminar en sábado.", "ex": "Volvieron a Jerusalén desde el monte que se llama del Olivar, el cual está cerca de Jerusalén, camino de un día de reposo.", "friend": "El del Olivar, que estaba cerquita: camino de un día de reposo."},
+  {"b": 0, "q": "¿Cómo se llamó el campo adquirido con el salario de la iniquidad de Judas?", "o": ["Acéldama", "Getsemaní", "Gólgota", "Betesda"], "a": 0, "ref": "Hechos 1:18-19", "hint": "En su propia lengua, el nombre quiere decir «Campo de sangre».", "ex": "Fue notorio a todos los habitantes de Jerusalén, de tal manera que aquel campo se llama en su propia lengua Acéldama, que quiere decir, Campo de sangre.", "friend": "Acéldama, el Campo de sangre. Gólgota es donde crucificaron a Jesús."},
+  {"b": 0, "q": "Cuando algunos se burlaban diciendo «están llenos de mosto», ¿qué hora del día dijo Pedro que era?", "o": ["La hora primera", "La hora sexta", "La hora novena", "La hora tercera"], "a": 3, "ref": "Hechos 2:13-15", "hint": "Pedro usó la hora como prueba de que no estaban ebrios: era muy temprano.", "ex": "Pedro dijo: Estos no están ebrios, como vosotros suponéis, puesto que es la hora tercera del día.", "friend": "La hora tercera, o sea, temprano por la mañana."},
+  {"b": 0, "q": "En Pentecostés, ¿a qué profeta citó Pedro para explicar lo que estaba pasando?", "o": ["Isaías", "Joel", "Jeremías", "Malaquías"], "a": 1, "ref": "Hechos 2:16-17", "hint": "La profecía dice que Dios derramaría de su Espíritu sobre toda carne.", "ex": "Pedro dijo: Esto es lo dicho por el profeta Joel: Y en los postreros días, dice Dios, derramaré de mi Espíritu sobre toda carne.", "friend": "Joel. Lo de derramar el Espíritu sobre toda carne es de Joel."},
+  {"b": 0, "q": "Después de la sanidad del cojo, ¿a qué pórtico concurrió todo el pueblo, atónito?", "o": ["El pórtico de David", "El pórtico Real", "El pórtico de los Gentiles", "El pórtico que se llama de Salomón"], "a": 3, "ref": "Hechos 3:11", "hint": "Lleva el nombre del rey que construyó el primer templo.", "ex": "Teniendo asidos a Pedro y a Juan el cojo que había sido sanado, todo el pueblo, atónito, concurrió a ellos al pórtico que se llama de Salomón.", "friend": "El de Salomón. Ahí también se juntaban en el capítulo 5."},
+  {"b": 0, "q": "¿Qué sobrenombre tenía José, el llamado Barsabás, candidato para reemplazar a Judas?", "o": ["Marcos", "Dídimo", "Niger", "Justo"], "a": 3, "ref": "Hechos 1:23", "hint": "Es una palabra que también se usa para hablar de alguien recto.", "ex": "Señalaron a dos: a José, llamado Barsabás, que tenía por sobrenombre Justo, y a Matías.", "friend": "Justo. José Barsabás Justo."},
+  {"b": 0, "q": "¿Qué requisito puso Pedro para el que ocuparía el lugar de Judas?", "o": ["Ser de la tribu de Leví", "Haber estado con ellos todo el tiempo, desde el bautismo de Juan hasta la ascensión", "Haber nacido en Galilea", "Saber leer la ley en hebreo"], "a": 1, "ref": "Hechos 1:21-22", "hint": "Tenía que ser testigo de la resurrección.", "ex": "Debía ser uno de los que anduvieron con ellos todo el tiempo, comenzando desde el bautismo de Juan hasta el día en que Jesús fue recibido arriba.", "friend": "Que hubiera estado con Jesús desde el bautismo de Juan."},
+  {"b": 0, "q": "¿Cuál de estas regiones NO aparece en la lista de pueblos de Pentecostés?", "o": ["Capadocia", "Panfilia", "Galacia", "Frigia"], "a": 2, "ref": "Hechos 2:9-11", "hint": "La lista menciona partos, medos, elamitas, Mesopotamia, Judea, Capadocia, el Ponto, Asia, Frigia, Panfilia, Egipto, las regiones de África más allá de Cirene, romanos, cretenses y árabes.", "ex": "En la lista de Hechos 2:9-11 están Capadocia, Frigia y Panfilia, pero no Galacia.", "friend": "Galacia. Las otras tres sí están en la lista."},
+  {"b": 0, "q": "En Pentecostés, ¿qué dijo Pedro del sepulcro del rey David?", "o": ["Que estaba con ellos hasta el día de hoy", "Que estaba vacío", "Que estaba en Belén", "Que nadie sabía dónde estaba"], "a": 0, "ref": "Hechos 2:29", "hint": "Lo usó para mostrar que David no resucitó.", "ex": "Pedro dijo que el patriarca David murió y fue sepultado, y que su sepulcro estaba con ellos hasta el día de hoy.", "friend": "Que el sepulcro de David seguía allí."},
+  {"b": 0, "q": "En su segundo sermón, ¿a quién citó Pedro diciendo: «El Señor vuestro Dios os levantará profeta... como a mí»?", "o": ["Elías", "Moisés", "Isaías", "Samuel"], "a": 1, "ref": "Hechos 3:22", "hint": "Fue quien recibió la ley.", "ex": "Pedro dijo: «Moisés dijo a los padres: El Señor vuestro Dios os levantará profeta de entre vuestros hermanos, como a mí».", "friend": "Moisés. Lo dijo en el Deuteronomio."},
+  {"b": 1, "q": "Según Hechos 4, ¿qué edad tenía el hombre que fue sanado a la puerta del templo?", "o": ["Más de cuarenta años", "Unos veinte años", "Treinta y ocho años", "Doce años"], "a": 0, "ref": "Hechos 4:22", "hint": "Era un hombre ya maduro; el texto da un número redondo «y más».", "ex": "El hombre en quien se había hecho este milagro de sanidad tenía más de cuarenta años.", "friend": "Más de cuarenta. Los treinta y ocho son del paralítico de Betesda, en Juan 5."},
+  {"b": 1, "q": "¿Cuánto tiempo después de la muerte de Ananías entró su mujer, Safira?", "o": ["Al día siguiente", "Una semana después", "Como tres horas después", "Tres días después"], "a": 2, "ref": "Hechos 5:7", "hint": "Fue el mismo día, y ella no sabía lo que había acontecido.", "ex": "Pasado un lapso como de tres horas, entró su mujer, no sabiendo lo que había acontecido.", "friend": "Como tres horas después. Fue el mismo día."},
+  {"b": 1, "q": "¿A qué dos hombres mencionó Gamaliel como ejemplos de levantamientos que se deshicieron?", "o": ["Barrabás y Judas Iscariote", "Teudas y Judas el galileo", "Simón el mago y Elimas", "Herodes y Pilato"], "a": 1, "ref": "Hechos 5:36-37", "hint": "Uno decía «que era alguien»; el otro se levantó en los días del censo.", "ex": "Gamaliel recordó a Teudas, a quien se unieron como cuatrocientos hombres, y a Judas el galileo, en los días del censo. Ambos perecieron y sus seguidores fueron dispersados.", "friend": "Teudas y Judas el galileo. Elimas sale más adelante, en el capítulo 13."},
+  {"b": 1, "q": "Además de Esteban y Felipe, ¿quiénes fueron escogidos entre los siete?", "o": ["Prócoro, Nicanor, Timón, Parmenas y Nicolás", "Silas, Timoteo, Tito, Lucas y Marcos", "Simeón, Lucio, Manaén, Agabo y Bernabé", "Aquila, Apolos, Erasto, Tíquico y Trófimo"], "a": 0, "ref": "Hechos 6:5", "hint": "Uno de ellos era «prosélito de Antioquía».", "ex": "Eligieron a Esteban, varón lleno de fe y del Espíritu Santo, a Felipe, a Prócoro, a Nicanor, a Timón, a Parmenas, y a Nicolás prosélito de Antioquía.", "friend": "La de Prócoro y Parmenas. Los otros nombres salen después, con Pablo."},
+  {"b": 1, "q": "¿De qué sinagoga se levantaron algunos para disputar con Esteban?", "o": ["La sinagoga de Nazaret", "La sinagoga de los fariseos", "La sinagoga llamada de los libertos", "La sinagoga de Capernaum"], "a": 2, "ref": "Hechos 6:9", "hint": "Junto a ella se nombran los de Cirene, Alejandría, Cilicia y Asia.", "ex": "Se levantaron unos de la sinagoga llamada de los libertos, y de los de Cirene, de Alejandría, de Cilicia y de Asia, disputando con Esteban.", "friend": "La de los libertos. Suena raro, pero así dice."},
+  {"b": 1, "q": "En Hechos 4:6, ¿a quién se llama «el sumo sacerdote», nombrado junto a Caifás, Juan y Alejandro?", "o": ["Gamaliel", "Nicodemo", "Anás", "Zacarías"], "a": 2, "ref": "Hechos 4:6", "hint": "Era suegro de Caifás (Juan 18:13).", "ex": "Se reunieron los gobernantes, los ancianos y los escribas, y el sumo sacerdote Anás, y Caifás y Juan y Alejandro.", "friend": "Anás. Caifás se nombra después."},
+  {"b": 1, "q": "Ante el concilio, ¿cómo describió Pedro a Jesús usando la figura de una piedra?", "o": ["La piedra reprobada por los edificadores, que vino a ser cabeza del ángulo", "La piedra que Jacob usó de almohada", "La piedra que cerraba el sepulcro", "La piedra de la ley de Moisés"], "a": 0, "ref": "Hechos 4:11", "hint": "La rechazaron los que construían.", "ex": "Pedro dijo: «Este Jesús es la piedra reprobada por vosotros los edificadores, la cual ha venido a ser cabeza del ángulo».", "friend": "La piedra que rechazaron y quedó como cabeza del ángulo."},
+  {"b": 1, "q": "En la oración de la iglesia en Hechos 4, ¿qué gobernantes se nombran como unidos contra Jesús?", "o": ["Anás y Caifás", "Tiberio y Claudio", "Agripa y Festo", "Herodes y Poncio Pilato"], "a": 3, "ref": "Hechos 4:27", "hint": "Uno era rey y el otro gobernador romano.", "ex": "Oraron: «Se unieron en esta ciudad contra tu santo Hijo Jesús, Herodes y Poncio Pilato, con los gentiles y el pueblo de Israel».", "friend": "Herodes y Pilato."},
+  {"b": 1, "q": "¿Quiénes envolvieron y sepultaron a Ananías?", "o": ["Los apóstoles", "Los jóvenes", "Su esposa Safira", "Los soldados del templo"], "a": 1, "ref": "Hechos 5:6", "hint": "Fueron los mismos que después sepultaron a Safira.", "ex": "Levantándose los jóvenes, lo envolvieron, y sacándolo, lo sepultaron.", "friend": "Los jóvenes de la iglesia."},
+  {"b": 1, "q": "Después de seguir el consejo de Gamaliel, ¿qué hizo el concilio con los apóstoles antes de soltarlos?", "o": ["Los soltaron sin castigo", "Los expulsaron de Jerusalén", "Les cortaron el cabello", "Los azotaron y les intimaron que no hablasen en el nombre de Jesús"], "a": 3, "ref": "Hechos 5:40", "hint": "No los mataron, pero sí los castigaron.", "ex": "Llamando a los apóstoles, después de azotarlos, les intimaron que no hablasen en el nombre de Jesús, y los pusieron en libertad.", "friend": "Los azotaron y les prohibieron hablar."},
+  {"b": 2, "q": "En su discurso, ¿cuántas personas dijo Esteban que eran Jacob y su parentela cuando José los hizo venir a Egipto?", "o": ["Doce", "Setenta", "Cuarenta", "Setenta y cinco"], "a": 3, "ref": "Hechos 7:14", "hint": "No es un número redondo.", "ex": "Enviando José, hizo venir a su padre Jacob, y a toda su parentela, en número de setenta y cinco personas.", "friend": "Setenta y cinco. Génesis dice setenta, pero Esteban dice setenta y cinco."},
+  {"b": 2, "q": "¿De quién era funcionario el eunuco etíope?", "o": ["Del faraón de Egipto", "De Candace, reina de los etíopes", "De la reina de Sabá", "Del rey Herodes"], "a": 1, "ref": "Hechos 8:27", "hint": "Era una reina, y él estaba sobre todos sus tesoros.", "ex": "Era un etíope, eunuco, funcionario de Candace reina de los etíopes, el cual estaba sobre todos sus tesoros.", "friend": "De Candace, la reina de los etíopes. La de Sabá es de los tiempos de Salomón."},
+  {"b": 2, "q": "Después de bautizar al eunuco, ¿en qué ciudad se encontró Felipe?", "o": ["Azoto", "Gaza", "Jope", "Lida"], "a": 0, "ref": "Hechos 8:39-40", "hint": "Desde allí fue anunciando el evangelio en todas las ciudades hasta llegar a Cesarea.", "ex": "El Espíritu del Señor arrebató a Felipe; y Felipe se encontró en Azoto, y pasando, anunciaba el evangelio en todas las ciudades, hasta que llegó a Cesarea.", "friend": "Azoto. Gaza era el camino por donde iba el eunuco."},
+  {"b": 2, "q": "En Lida, ¿cuánto tiempo llevaba en cama el paralítico Eneas?", "o": ["Doce años", "Treinta y ocho años", "Ocho años", "Cuarenta años"], "a": 2, "ref": "Hechos 9:32-34", "hint": "Es menos de diez años.", "ex": "Pedro halló a Eneas, que hacía ocho años que estaba en cama, pues era paralítico, y le dijo: Eneas, Jesucristo te sana; levántate, y haz tu cama.", "friend": "Ocho años, creo. Los doce son de la mujer del flujo de sangre."},
+  {"b": 2, "q": "En Jope, ¿en casa de quién se quedó Pedro muchos días?", "o": ["De Cornelio, el centurión", "De un cierto Simón, curtidor", "De Ananías", "De Judas, en la calle Derecha"], "a": 1, "ref": "Hechos 9:43", "hint": "Se llamaba igual que Pedro, y su oficio era trabajar las pieles.", "ex": "Pedro se quedó muchos días en Jope en casa de un cierto Simón, curtidor.", "friend": "En casa de Simón el curtidor. Ahí mismo tuvo después la visión del lienzo."},
+  {"b": 2, "q": "Según Esteban, ¿dónde estaba Abraham cuando el Dios de la gloria se le apareció?", "o": ["En Mesopotamia, antes que morase en Harán", "En Canaán, junto a Hebrón", "En Egipto", "En Ur, después de salir de Harán"], "a": 0, "ref": "Hechos 7:2", "hint": "Fue antes de vivir en Harán.", "ex": "Esteban dijo: «El Dios de la gloria apareció a nuestro padre Abraham, estando en Mesopotamia, antes que morase en Harán».", "friend": "En Mesopotamia, antes de Harán."},
+  {"b": 2, "q": "Según Esteban, ¿qué edad tenía Moisés cuando le vino al corazón visitar a sus hermanos?", "o": ["Treinta años", "Ochenta años", "Cuarenta años", "Veinte años"], "a": 2, "ref": "Hechos 7:23", "hint": "Es el mismo número de años que luego pasó antes de ver la zarza.", "ex": "Cuando hubo cumplido la edad de cuarenta años, le vino al corazón el visitar a sus hermanos, los hijos de Israel.", "friend": "Cuarenta años."},
+  {"b": 2, "q": "Según Esteban, ¿en qué tierra vivió Moisés como extranjero y engendró dos hijos?", "o": ["Moab", "Madián", "Edom", "Gosén"], "a": 1, "ref": "Hechos 7:29", "hint": "Huyó allí después de matar al egipcio.", "ex": "Al oír esta palabra, Moisés huyó, y vivió como extranjero en tierra de Madián, donde engendró dos hijos.", "friend": "Madián. Ahí se casó."},
+  {"b": 2, "q": "¿Por qué camino mandó el ángel a Felipe antes de encontrar al eunuco?", "o": ["El que sube de Jericó a Jerusalén", "El que va de Samaria a Galilea", "El que lleva de Jope a Cesarea", "El que desciende de Jerusalén a Gaza, el cual es desierto"], "a": 3, "ref": "Hechos 8:26", "hint": "Iba hacia el sur.", "ex": "El ángel le dijo: «Levántate y ve hacia el sur, por el camino que desciende de Jerusalén a Gaza, el cual es desierto».", "friend": "El camino de Jerusalén a Gaza."},
+  {"b": 2, "q": "Según el Señor le dijo a Ananías, ¿qué había visto Saulo en visión?", "o": ["A un varón llamado Ananías que entraba y le ponía las manos encima", "A Esteban perdonándolo", "A un ángel con una espada", "A Pedro bautizándolo"], "a": 0, "ref": "Hechos 9:12", "hint": "Saulo ya sabía el nombre de quien vendría.", "ex": "El Señor dijo que Saulo había visto en visión a un varón llamado Ananías, que entraba y le ponía las manos encima para que recobrase la vista.", "friend": "Vio a Ananías en visión antes de que llegara."},
+  {"b": 3, "q": "¿A qué hora subió Pedro a la azotea a orar, el día de la visión del lienzo?", "o": ["La hora tercera", "Cerca de la hora sexta", "La hora novena", "A medianoche"], "a": 1, "ref": "Hechos 10:9-10", "hint": "Tuvo gran hambre y quiso comer, así que era cerca del mediodía.", "ex": "Al día siguiente, mientras los enviados de Cornelio se acercaban a la ciudad, Pedro subió a la azotea para orar, cerca de la hora sexta.", "friend": "Cerca de la hora sexta. La novena es la de la visión de Cornelio."},
+  {"b": 3, "q": "Los esparcidos tras la muerte de Esteban hablaban solo a los judíos. ¿De dónde eran los varones que en Antioquía hablaron también a los griegos?", "o": ["De Galilea y de Judea", "De Roma y de Corinto", "De Egipto y de Arabia", "De Chipre y de Cirene"], "a": 3, "ref": "Hechos 11:19-20", "hint": "Uno es la isla de donde era Bernabé; el otro, una ciudad del norte de África.", "ex": "Había entre ellos unos varones de Chipre y de Cirene, los cuales, cuando entraron en Antioquía, hablaron también a los griegos, anunciando el evangelio del Señor Jesús.", "friend": "De Chipre y de Cirene. Me acuerdo por Bernabé, que era de Chipre."},
+  {"b": 3, "q": "¿Cómo mandó Herodes custodiar a Pedro en la cárcel?", "o": ["Lo entregó a cuatro grupos de cuatro soldados cada uno", "Lo dejó a cargo de un solo carcelero", "Lo puso bajo doce soldados y un centurión", "Lo encerró solo, sin guardias"], "a": 0, "ref": "Hechos 12:4", "hint": "Fueron varios grupos de soldados que se turnaban para vigilarlo.", "ex": "Herodes le puso en la cárcel, entregándole a cuatro grupos de cuatro soldados cada uno, para que le custodiasen; y se proponía sacarle al pueblo después de la pascua.", "friend": "Cuatro grupos de cuatro soldados. ¡Dieciséis para un solo preso!"},
+  {"b": 3, "q": "Los de Tiro y de Sidón pidieron paz a Herodes después de sobornar a alguien. ¿A quién?", "o": ["A Agabo, el profeta", "A Manaén, que se había criado junto con Herodes", "A Blasto, que era camarero mayor del rey", "A Sergio Paulo, el procónsul"], "a": 2, "ref": "Hechos 12:20", "hint": "Era un hombre de confianza en el palacio del rey.", "ex": "Herodes estaba enojado contra los de Tiro y de Sidón; ellos, sobornado Blasto, que era camarero mayor del rey, pedían paz, porque su territorio era abastecido por el del rey.", "friend": "Blasto, el camarero mayor del rey. Nombre raro, pero es ese."},
+  {"b": 3, "q": "Cuando Bernabé y Saulo volvieron de Jerusalén tras cumplir su servicio, ¿a quién llevaron consigo?", "o": ["A Silas", "A Timoteo", "A Lucas", "A Juan, el que tenía por sobrenombre Marcos"], "a": 3, "ref": "Hechos 12:25", "hint": "Su madre se llamaba María, y en su casa oraban por Pedro.", "ex": "Bernabé y Saulo, cumplido su servicio, volvieron de Jerusalén, llevando también consigo a Juan, el que tenía por sobrenombre Marcos.", "friend": "A Juan Marcos. Silas y Timoteo aparecen más adelante."},
+  {"b": 3, "q": "¿A quiénes envió Cornelio a Jope para buscar a Pedro?", "o": ["A tres centuriones", "A dos de sus criados y a un devoto soldado", "A su hijo y a su esposa", "A doce soldados"], "a": 1, "ref": "Hechos 10:7-8", "hint": "En total eran tres hombres.", "ex": "Cornelio llamó a dos de sus criados y a un devoto soldado de los que le asistían, y los envió a Jope.", "friend": "Dos criados y un soldado devoto."},
+  {"b": 3, "q": "¿Dónde estaba la casa de Simón el curtidor, donde se hospedaba Pedro?", "o": ["Junto al templo", "En el monte Carmelo", "Junto al río Jordán", "Junto al mar"], "a": 3, "ref": "Hechos 10:6", "hint": "Jope era un puerto.", "ex": "El ángel dijo que Pedro moraba con un cierto Simón curtidor, que tenía su casa junto al mar.", "friend": "Junto al mar, en Jope."},
+  {"b": 3, "q": "Según Pedro en Jerusalén, ¿cuántos hermanos lo acompañaron a casa de Cornelio?", "o": ["Dos", "Doce", "Seis", "Tres"], "a": 2, "ref": "Hechos 11:12", "hint": "Los llevó como testigos y estaban con él al dar el informe.", "ex": "Pedro dijo: «Fueron también conmigo estos seis hermanos, y entramos en casa de un varón».", "friend": "Seis hermanos fueron con él."},
+  {"b": 3, "q": "Después de ser liberado, ¿a quiénes pidió Pedro que avisaran?", "o": ["A Jacobo y a los hermanos", "A Juan y a Andrés", "A Bernabé y a Saulo", "A Herodes y a los guardias"], "a": 0, "ref": "Hechos 12:17", "hint": "No es el Jacobo hermano de Juan, porque a ese ya lo habían matado.", "ex": "Pedro les contó cómo el Señor lo había sacado de la cárcel y dijo: «Haced saber esto a Jacobo y a los hermanos».", "friend": "A Jacobo y a los hermanos."},
+  {"b": 3, "q": "Cuando Herodes habló al pueblo vestido de ropas reales, ¿qué gritaba la gente?", "o": ["«¡Viva el rey de los judíos!»", "«¡Gloria al César!»", "«¡Voz de Dios, y no de hombre!»", "«¡Hosanna al hijo de David!»"], "a": 2, "ref": "Hechos 12:21-22", "hint": "Lo trataban como si fuera un dios.", "ex": "El pueblo aclamaba gritando: «¡Voz de Dios, y no de hombre!». Al momento un ángel del Señor le hirió, por cuanto no dio la gloria a Dios.", "friend": "Decían que era voz de Dios. Por eso fue herido."}
+ ]}
+};
+const ORDER=["facil","medio","dificil"];
+for(const k of ORDER)LEVELS[k].q.forEach((q,i)=>q.id=i);
+const L="ABCD";
+const KEY="ruta-hechos-v3";
+let G,S,Q,picking=true;
+function fresh(){return{block:0,idx:[0,0,0,0],ans:{},used:{},life:[{fifty:1,friend:1},{fifty:1,friend:1},{fifty:1,friend:1},{fifty:1,friend:1}],gone:{},showResults:[false,false,false,false]};}
+try{G=JSON.parse(localStorage.getItem(KEY));}catch(e){G=null;}
+if(!G||typeof G!=="object"||!G.lv)G={level:null,lv:{}};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(G));}catch(e){}}
+function setLevel(k){G.level=k;if(!G.lv[k])G.lv[k]=fresh();S=G.lv[k];Q=LEVELS[k].q;picking=false;save();}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const bq=b=>Q.filter(q=>q.b===b);
+const used=id=>S.used[id]||(S.used[id]={});
+const COST={hint:2,cite:1,fifty:3,friend:3};
+function stake(id){const u=used(id);let p=10;for(const k in COST)if(u[k])p-=COST[k];return Math.max(1,p);}
+function gwUrl(ref){return "https://www.biblegateway.com/passage/?search="+encodeURIComponent(ref)+"&version=RVR1960";}
+function totalOf(st){return st?Object.values(st.ans).reduce((t,a)=>t+(a.ok?a.pts:0),0):0;}
+function total(){return totalOf(S);}
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2200);}
+function bars(n){return `<span class="bars" aria-hidden="true">${[1,2,3].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</span>`;}
+
+const ICON={
+ hint:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/></svg>',
+ cite:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5z"/><path d="M4 19a2 2 0 0 1 2-2h13"/></svg>',
+ fifty:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/></svg>',
+ friend:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg>'
+};
+
+function renderChrome(){
+ const on=!picking;
+ $("#lvchip").hidden=!on; $("#scorebox").hidden=!on; $("#chg").hidden=!on;
+ $("#route").hidden=!on; $(".verse").hidden=!on; $("#resetnav").hidden=!on;
+ if(on){const lv=LEVELS[G.level];$("#lvchip").innerHTML=`${bars(lv.n)}Nivel ${lv.name}`;}
+}
+
+function renderPicker(){
+ renderChrome();
+ $("#main").innerHTML=`<section class="card" aria-labelledby="pk">
+  <span class="eyebrow">Antes de empezar</span>
+  <h2 class="q" id="pk">Elige tu nivel</h2>
+  <p class="sub" style="margin:-8px 0 0">Cada nivel tiene 40 preguntas distintas, 10 por bloque. Puedes cambiar de nivel cuando quieras; tu avance en cada uno se guarda aparte.</p>
+  <div class="levels">${ORDER.map(k=>{
+   const lv=LEVELS[k],st=G.lv[k],n=st?Object.keys(st.ans).length:0;
+   const sc=st&&n?`Tu puntaje: <b>${totalOf(st)}</b> / 400 · ${n} de 40 respondidas`:"Sin empezar";
+   return `<button type="button" class="lvl ${G.level===k?"last":""}" data-lv="${k}">${bars(lv.n)}<span class="nm">${lv.name}${G.level===k&&n?` <span class="tag">Seguir aquí</span>`:""}</span><span class="ds">${lv.desc}</span><span class="sc">${sc}</span></button>`;
+  }).join("")}</div>
+ </section>`;
+}
+
+function renderRoute(){
+ $("#route").innerHTML=BLOCKS.map((b,i)=>{
+  const qs=bq(i),done=qs.every(q=>S.ans[q.id]);
+  return `<button type="button" class="stop ${i===S.block?"on":""} ${done?"done":""}" data-b="${i}" aria-current="${i===S.block}"><span class="dot">${done?"✓":i+1}</span><span class="name">${b.name}</span><span class="chap">${b.chap}</span></button>`;
+ }).join("");
+ $("#total").textContent=total();
+}
+
+function render(){
+ if(picking||!G.level)return renderPicker();
+ renderChrome();
+ renderRoute();
+ const b=S.block, qs=bq(b);
+ if(S.showResults[b]) return renderResults(b);
+ const q=qs[S.idx[b]], a=S.ans[q.id], u=used(q.id), life=S.life[b], gone=S.gone[q.id]||[];
+ const pips=qs.map((x,i)=>{const r=S.ans[x.id];return `<button type="button" class="pip ${i===S.idx[b]?"cur":""} ${r?(r.ok?"ok":"no"):""}" data-i="${i}" aria-label="Pregunta ${i+1}">${i+1}</button>`}).join("");
+ const opts=q.o.map((t,i)=>{
+  let c="";if(a){if(i===q.a)c="right";else if(i===a.chosen)c="wrong";}else if(gone.includes(i))c="gone";
+  return `<button type="button" class="opt ${c}" data-o="${i}" ${a||gone.includes(i)?"disabled":""}><span class="k">${L[i]}</span><span>${esc(t)}</span></button>`;
+ }).join("");
+ const helps=a?"":`<div class="helps" role="group" aria-label="Ayudas">
+   <button type="button" class="help" data-h="hint" ${u.hint?"disabled":""}>${ICON.hint}Pista <span class="cost">−2</span></button>
+   <a class="help" data-h="cite" href="${gwUrl(q.ref)}" target="_blank" rel="noopener">${ICON.cite}Ve a ${q.ref.replace("Hechos","Hch")} <span class="cost">${u.cite?"usada":"−1"}</span></a>
+   <button type="button" class="help" data-h="fifty" ${u.fifty||!life.fifty?"disabled":""}>${ICON.fifty}50/50 <span class="cost">${life.fifty?"−3":"agotado"}</span></button>
+   <button type="button" class="help" data-h="friend" ${u.friend||!life.friend?"disabled":""}>${ICON.friend}Pide ayuda a un amigo <span class="cost">${life.friend?"−3":"agotado"}</span></button>
+ </div>`;
+ let panels="";
+ if(u.hint&&!a) panels+=`<div class="panel hint"><h3>Pista</h3><p>${esc(q.hint)}</p></div>`;
+ if(u.friendMode&&!a){
+  if(u.friendMode==="menu") panels+=`<div class="panel friend"><h3>Pide ayuda a un amigo</h3><p>Elige cómo quieres pedir la ayuda. Cualquiera de las dos cuenta como tu ayuda de amigo en este bloque.</p><div class="row"><button type="button" class="mini" data-f="opina">Un amigo opina aquí</button><button type="button" class="mini" data-f="wa">Preguntar por WhatsApp</button><button type="button" class="mini" data-f="cancel">Cancelar</button></div></div>`;
+  if(u.friendMode==="opina") panels+=`<div class="panel friend"><h3>Tu amiga Sara dice</h3><p>«${esc(q.friend)}»</p></div>`;
+  if(u.friendMode==="wa"){const txt=waText(q);panels+=`<div class="panel friend"><h3>Pregúntale a un amigo real</h3><p>Abre WhatsApp con la pregunta lista, o copia el texto y mándalo por donde quieras.</p><div class="row"><a class="mini" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">Abrir WhatsApp</a><button type="button" class="mini" data-f="copy">Copiar texto</button></div><textarea id="watext" readonly aria-label="Texto para compartir">${esc(txt)}</textarea></div>`;}
+ }
+ if(a){
+  panels+=`<div class="panel ${a.ok?"fb-ok":"fb-no"}" role="status"><h3>${a.ok?"¡Correcto! +"+a.pts+" pts":"No es correcta · era la "+L[q.a]}</h3><p>${esc(q.ex)}</p><div class="row"><a class="mini" href="${gwUrl(q.ref)}" target="_blank" rel="noopener">Leer ${q.ref} (RVR1960)</a></div></div>`;
+ }
+ const last=S.idx[b]===qs.length-1, allDone=qs.every(x=>S.ans[x.id]);
+ $("#main").innerHTML=`<section class="card" aria-labelledby="qt">
+  <div class="qhead"><span class="eyebrow">Bloque ${b+1} · ${BLOCKS[b].chap} · ${BLOCKS[b].title}</span><div class="pips">${pips}</div></div>
+  <h2 class="q" id="qt">${esc(q.q)}</h2>
+  ${a?"":`<div class="stake">Esta pregunta vale ahora <b>${stake(q.id)} pts</b></div>`}
+  <div class="opts">${opts}</div>
+  ${helps}
+  ${panels}
+  <div class="nav"><button type="button" class="btn ghost" id="prev" ${S.idx[b]===0?"disabled":""}>Anterior</button>
+  ${last&&allDone?`<button type="button" class="btn" id="seeRes">Ver resultado del bloque</button>`:(last?`<button type="button" class="btn" id="pending">Ir a la pendiente</button>`:`<button type="button" class="btn" id="next">Siguiente</button>`)}</div>
+ </section>`;
+}
+
+function waText(q){
+ return `¡Ayuda! Estoy haciendo un cuestionario de Hechos 1–12 (Reina Valera 1960), nivel ${LEVELS[G.level].name}.\n\n${q.q}\n`+q.o.map((t,i)=>`${L[i]}) ${t}`).join("\n")+`\n\n¿Cuál crees que es? La respuesta está en ${q.ref}.`;
+}
+
+function renderResults(b){
+ const qs=bq(b),pts=qs.reduce((t,q)=>t+(S.ans[q.id]?.ok?S.ans[q.id].pts:0),0),ok=qs.filter(q=>S.ans[q.id]?.ok).length;
+ const next=BLOCKS.findIndex((_,i)=>i>b&&!bq(i).every(q=>S.ans[q.id]));
+ const all=Q.every(q=>S.ans[q.id]);
+ $("#main").innerHTML=`<section class="card res"><span class="eyebrow">Bloque ${b+1} completado · ${BLOCKS[b].chap} · Nivel ${LEVELS[G.level].name}</span>
+  <div><div class="big">${pts}<span style="font-size:1.1rem;color:var(--muted)"> / 100 pts</span></div><p class="sub">${ok} de ${qs.length} respuestas correctas</p></div>
+  <ol>${qs.map(q=>{const a=S.ans[q.id];return `<li class="${a.ok?"ok":"no"}"><span>${esc(q.q)}</span> — ${a.ok?"+"+a.pts:"0"} pts · ${q.ref}</li>`}).join("")}</ol>
+  ${all?`<p><b>¡Terminaste la ruta en nivel ${LEVELS[G.level].name}!</b> Total: ${total()} de 400 puntos.</p>`:""}
+  <div class="nav"><button type="button" class="btn ghost" id="redo">Repetir este bloque</button>${next>=0?`<button type="button" class="btn" id="goNext">Seguir al bloque ${next+1}</button>`:(all?`<button type="button" class="btn" id="chg2">Probar otro nivel</button>`:"")}</div>
+ </section>`;
+ renderRoute();
+}
+
+
+/* ---------- Sonido (Web Audio, sin archivos externos) ---------- */
+const SND_KEY="ruta-hechos-sonido";
+let SND={muted:false,music:true};
+try{Object.assign(SND,JSON.parse(localStorage.getItem(SND_KEY))||{});}catch(e){}
+function saveSnd(){try{localStorage.setItem(SND_KEY,JSON.stringify(SND));}catch(e){}}
+let AC=null,master=null,sfxBus=null,musicBus=null,musicTimer=null,musicOn=false,chordIdx=0,voices=[];
+function ensureAudio(){
+ if(AC)return AC;
+ const C=window.AudioContext||window.webkitAudioContext; if(!C)return null;
+ try{AC=new C();}catch(e){return null;}
+ master=AC.createGain(); master.gain.value=SND.muted?0:1; master.connect(AC.destination);
+ sfxBus=AC.createGain(); sfxBus.gain.value=0.5; sfxBus.connect(master);
+ const lp=AC.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=900; lp.Q.value=0.4;
+ const lfo=AC.createOscillator(), lfoG=AC.createGain(); lfo.frequency.value=0.07; lfoG.gain.value=350; lfo.connect(lfoG).connect(lp.frequency); lfo.start();
+ musicBus=AC.createGain(); musicBus.gain.value=0; musicBus.connect(lp).connect(master);
+ return AC;
+}
+function tone(freq,t0,dur,type,vol,dest){
+ const o=AC.createOscillator(),g=AC.createGain();
+ o.type=type; o.frequency.setValueAtTime(freq,t0);
+ g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+0.015); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+ o.connect(g).connect(dest||sfxBus); o.start(t0); o.stop(t0+dur+0.05); return o;
+}
+function playSuccess(){
+ if(!ensureAudio()||SND.muted)return; AC.resume&&AC.resume();
+ const t=AC.currentTime+0.02;
+ [523.25,659.25,783.99,1046.5].forEach((f,i)=>{tone(f,t+i*0.085,0.35,"triangle",0.35);tone(f*2,t+i*0.085,0.18,"sine",0.06);});
+ tone(1567.98,t+0.36,0.5,"sine",0.12);
+}
+function playFail(){
+ if(!ensureAudio()||SND.muted)return; AC.resume&&AC.resume();
+ const t=AC.currentTime+0.02;
+ const o=AC.createOscillator(),g=AC.createGain(),f=AC.createBiquadFilter();
+ o.type="sawtooth"; o.frequency.setValueAtTime(220,t); o.frequency.exponentialRampToValueAtTime(110,t+0.45);
+ f.type="lowpass"; f.frequency.value=700;
+ g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.28,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+0.5);
+ o.connect(f).connect(g).connect(sfxBus); o.start(t); o.stop(t+0.55);
+ tone(155.56,t+0.12,0.4,"square",0.05);
+}
+function playFanfare(){
+ if(!ensureAudio()||SND.muted)return;
+ const t=AC.currentTime+0.02;
+ [[392,0],[523.25,0.14],[659.25,0.28],[783.99,0.42],[1046.5,0.6]].forEach(([f,d])=>tone(f,t+d,d>0.5?0.9:0.25,"triangle",0.3));
+}
+/* Música de ambiente: acordes suaves que cambian cada 6 s (re menor, si bemol, fa, do) */
+const CHORDS=[[146.83,220,293.66,349.23],[116.54,233.08,293.66,349.23],[174.61,220,261.63,349.23],[130.81,196,261.63,329.63]];
+function playChord(){
+ const t=AC.currentTime, notes=CHORDS[chordIdx%CHORDS.length]; chordIdx++;
+ voices.forEach(v=>{try{v.g.gain.cancelScheduledValues(t);v.g.gain.setValueAtTime(v.g.gain.value,t);v.g.gain.linearRampToValueAtTime(0,t+2.5);v.o.forEach(o=>o.stop(t+2.7));}catch(e){}});
+ voices=notes.map((f,i)=>{
+  const g=AC.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(i===0?0.22:0.12,t+2.5); g.connect(musicBus);
+  const os=[-5,5].map(dt=>{const o=AC.createOscillator();o.type=i===0?"sine":"triangle";o.frequency.value=f;o.detune.value=dt;o.connect(g);o.start(t);return o;});
+  return {g,o:os};
+ });
+ /* campanita suave de vez en cuando */
+ if(chordIdx%2===0){const top=notes.at(-1)*2;tone(top,t+1.2,2.4,"sine",0.05,musicBus);tone(top*1.5,t+2.4,2.4,"sine",0.035,musicBus);}
+}
+function startMusic(){
+ if(musicOn||SND.muted||!SND.music||document.hidden)return;
+ if(!ensureAudio())return; AC.resume&&AC.resume();
+ musicOn=true; const t=AC.currentTime;
+ musicBus.gain.cancelScheduledValues(t); musicBus.gain.setValueAtTime(musicBus.gain.value,t); musicBus.gain.linearRampToValueAtTime(0.55,t+3);
+ playChord(); musicTimer=setInterval(playChord,6000);
+}
+function stopMusic(){
+ if(!musicOn||!AC)return; musicOn=false; clearInterval(musicTimer);
+ const t=AC.currentTime; musicBus.gain.cancelScheduledValues(t); musicBus.gain.setValueAtTime(musicBus.gain.value,t); musicBus.gain.linearRampToValueAtTime(0,t+1);
+ const old=voices; voices=[]; setTimeout(()=>old.forEach(v=>v.o.forEach(o=>{try{o.stop();}catch(e){}})),1200);
+}
+const SICON={
+ music:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
+ musicOff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/><path d="M3 3l18 18"/></svg>',
+ on:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+ off:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>'
+};
+function renderSound(){
+ const m=$("#musicBtn"),s=$("#muteBtn");
+ m.innerHTML=(SND.music&&!SND.muted?SICON.music:SICON.musicOff)+`<span class="lbl">${SND.music?"Música":"Sin música"}</span>`;
+ m.setAttribute("aria-pressed",String(SND.music)); m.disabled=SND.muted;
+ m.title=SND.music?"Apagar la música de fondo":"Encender la música de fondo";
+ s.innerHTML=(SND.muted?SICON.off:SICON.on)+`<span class="lbl">${SND.muted?"Silenciado":"Sonido"}</span>`;
+ s.setAttribute("aria-pressed",String(SND.muted));
+ s.title=SND.muted?"Activar el sonido":"Silenciar todo";
+}
+function applySound(){
+ if(AC&&master){const t=AC.currentTime;master.gain.cancelScheduledValues(t);master.gain.setTargetAtTime(SND.muted?0:1,t,0.05);}
+ if(SND.muted||!SND.music)stopMusic(); else startMusic();
+ renderSound(); saveSnd();
+}
+document.addEventListener("pointerdown",()=>{if(!SND.muted&&SND.music)startMusic();else ensureAudio();},{capture:true});
+document.addEventListener("keydown",()=>{if(!SND.muted&&SND.music)startMusic();},{capture:true});
+document.addEventListener("visibilitychange",()=>{if(document.hidden)stopMusic();else if(AC&&!SND.muted&&SND.music)startMusic();});
+$("#musicBtn").addEventListener("click",e=>{e.stopPropagation();SND.music=!SND.music;applySound();toast(SND.music?"Música encendida":"Música apagada");});
+$("#muteBtn").addEventListener("click",e=>{e.stopPropagation();SND.muted=!SND.muted;applySound();toast(SND.muted?"Sonido silenciado":"Sonido activado");});
+renderSound();
+
+/* ---------- Confeti ---------- */
+const FX=$("#fx"),fctx=FX.getContext("2d");let parts=[],fxRun=false;
+const reduceMotion=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function sizeFx(){const r=window.devicePixelRatio||1;FX.width=innerWidth*r;FX.height=innerHeight*r;fctx.setTransform(r,0,0,r,0,0);}
+sizeFx();addEventListener("resize",sizeFx);
+function fxColors(){const cs=getComputedStyle(document.documentElement);return["--accent","--gold","--good","--bad","--accent"].map(v=>cs.getPropertyValue(v).trim()||"#0e6767").concat(["#f2c14e","#7cc6fe","#f78fb3"]);}
+function confetti(x,y,n){
+ if(reduceMotion)n=Math.min(n,18);
+ const cols=fxColors();
+ for(let i=0;i<n;i++){const a=-Math.PI/2+(Math.random()-.5)*Math.PI*1.1,sp=5+Math.random()*7;
+  parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,w:5+Math.random()*6,h:8+Math.random()*8,r:Math.random()*6.28,vr:(Math.random()-.5)*.35,c:cols[i%cols.length],life:0,max:90+Math.random()*50});}
+ if(!fxRun){fxRun=true;requestAnimationFrame(stepFx);}
+}
+function stepFx(){
+ fctx.clearRect(0,0,innerWidth,innerHeight);
+ parts=parts.filter(p=>p.life<p.max&&p.y<innerHeight+40);
+ for(const p of parts){p.life++;p.vy+=.22;p.vx*=.985;p.vy*=.985;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+  fctx.save();fctx.globalAlpha=Math.max(0,1-p.life/p.max);fctx.translate(p.x,p.y);fctx.rotate(p.r);fctx.fillStyle=p.c;fctx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.r*2)));fctx.restore();}
+ if(parts.length)requestAnimationFrame(stepFx);else{fxRun=false;fctx.clearRect(0,0,innerWidth,innerHeight);}
+}
+function celebrateAt(el,big){
+ const r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
+ confetti(r.left+r.width/2,r.top+r.height/2,big?140:70);
+ if(big){setTimeout(()=>confetti(innerWidth*.2,innerHeight*.6,60),180);setTimeout(()=>confetti(innerWidth*.8,innerHeight*.6,60),320);}
+}
+
+function resetLabel(t){t.textContent="Reiniciar todo";delete t.dataset.confirm;}
+document.addEventListener("click",e=>{
+ const t=e.target.closest("button,a");if(!t)return;
+ if(t.dataset.lv){setLevel(t.dataset.lv);render();window.scrollTo&&window.scrollTo(0,0);return;}
+ if(t.id==="chg"||t.id==="chg2"){picking=true;resetLabel($("#reset"));render();return;}
+ if(picking||!S)return;
+ const b=S.block, qs=bq(b), q=qs[S.idx[b]];
+ if(t.dataset.b!==undefined){S.block=+t.dataset.b;save();render();return;}
+ if(t.dataset.i!==undefined){S.idx[b]=+t.dataset.i;save();render();return;}
+ if(t.dataset.o!==undefined){
+  const c=+t.dataset.o, ok=c===q.a;
+  const rect=t.getBoundingClientRect();
+  S.ans[q.id]={chosen:c,ok,pts:ok?stake(q.id):0};save();render();
+  if(ok){playSuccess();confetti(rect.left+rect.width/2,rect.top+rect.height/2,reduceMotion?18:80);}else playFail();
+  return;
+ }
+ const h=t.dataset.h;
+ if(h==="hint"){used(q.id).hint=true;save();render();return;}
+ if(h==="cite"){if(!used(q.id).cite){used(q.id).cite=true;save();setTimeout(render,50);}return;}
+ if(h==="fifty"){
+  const wrong=[0,1,2,3].filter(i=>i!==q.a).sort(()=>Math.random()-.5).slice(0,2);
+  S.gone[q.id]=wrong;used(q.id).fifty=true;S.life[b].fifty--;save();render();return;
+ }
+ if(h==="friend"){used(q.id).friendMode="menu";save();render();return;}
+ const f=t.dataset.f;
+ if(f==="cancel"){delete used(q.id).friendMode;save();render();return;}
+ if(f==="opina"||f==="wa"){const u=used(q.id);if(!u.friend){u.friend=true;S.life[b].friend--;}u.friendMode=f;save();render();return;}
+ if(f==="copy"){
+  const ta=$("#watext");
+  const fallback=()=>{ta.focus();ta.select();toast("Texto seleccionado: cópialo con tu teclado");};
+  try{navigator.clipboard.writeText(ta.value).then(()=>toast("Texto copiado"),fallback);}catch(err){fallback();}
+  return;
+ }
+ if(t.id==="prev"){S.idx[b]--;save();render();return;}
+ if(t.id==="next"){S.idx[b]++;save();render();return;}
+ if(t.id==="pending"){S.idx[b]=qs.findIndex(x=>!S.ans[x.id]);save();render();return;}
+ if(t.id==="seeRes"){S.showResults[b]=true;save();render();
+  const okN=qs.filter(x=>S.ans[x.id]?.ok).length; if(okN>=Math.ceil(qs.length*0.7)){playFanfare();celebrateAt($(".big"),true);}
+  return;}
+ if(t.id==="goNext"){S.block=BLOCKS.findIndex((_,i)=>i>b&&!bq(i).every(q=>S.ans[q.id]));save();render();return;}
+ if(t.id==="redo"){qs.forEach(x=>{delete S.ans[x.id];delete S.used[x.id];delete S.gone[x.id];});S.life[b]={fifty:1,friend:1};S.idx[b]=0;S.showResults[b]=false;save();render();return;}
+ if(t.id==="reset"){
+  if(t.dataset.confirm){G.lv[G.level]=fresh();S=G.lv[G.level];save();render();resetLabel(t);toast("Nivel "+LEVELS[G.level].name+" reiniciado");}
+  else{t.dataset.confirm="1";t.textContent="Toca otra vez para reiniciar el nivel "+LEVELS[G.level].name;setTimeout(()=>{if(t.dataset.confirm)resetLabel(t);},4000);}
+ }
+});
+render();
+</script>
+
+</html>
